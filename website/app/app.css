@@ -1,0 +1,129 @@
+/* TalentFlow Console — app-specific styles on top of the site design system */
+
+body { background: #efeee8; }
+
+.console-tag {
+  font-family: var(--font-mono); font-size: 0.62rem; letter-spacing: 0.14em;
+  background: var(--ink); color: #fff; padding: 0.18rem 0.5rem; border-radius: 4px;
+}
+
+.console-meta { display: flex; align-items: center; gap: 0.8rem; }
+.wf-badge { font-family: var(--font-mono); font-size: 0.78rem; background: var(--card);
+  border: 1px solid var(--line); border-radius: 6px; padding: 0.3rem 0.6rem; }
+.btn-sm { padding: 0.45rem 0.9rem; font-size: 0.85rem; }
+
+.console-grid {
+  display: grid; grid-template-columns: 1.9fr 1fr; gap: 1.2rem;
+  padding-top: 1.6rem; padding-bottom: 3rem; align-items: start;
+}
+@media (max-width: 920px) { .console-grid { grid-template-columns: 1fr; } }
+
+.col-main, .col-side { display: grid; gap: 1.2rem; }
+
+.panel { padding: 1.6rem 1.7rem; }
+.panel-titlebar { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 0.8rem; }
+
+textarea, input, select {
+  width: 100%; font-family: var(--font-body); font-size: 0.95rem;
+  border: 1.5px solid var(--line); border-radius: 8px; padding: 0.7rem 0.85rem;
+  background: #fff; color: var(--ink); resize: vertical;
+}
+textarea:focus, input:focus, select:focus { outline: 2px solid var(--accent); border-color: transparent; }
+
+.load-existing { display: flex; gap: 0.6rem; align-items: center; margin-top: 1.3rem;
+  padding-top: 1.1rem; border-top: 1px dashed var(--line); flex-wrap: wrap; }
+.load-existing input { width: 220px; }
+
+/* gate panel */
+.gate-panel { border-left: 5px solid var(--accent); }
+#action-summary { color: var(--ink-soft); margin: 0.6rem 0 1rem; }
+
+.jd-box {
+  background: #fff; border: 1px solid var(--line); border-radius: 8px;
+  padding: 1.1rem 1.3rem; max-height: 420px; overflow-y: auto; margin-bottom: 1.1rem;
+  font-size: 0.92rem;
+}
+.jd-box h1, .jd-box h2, .jd-box h3 { font-size: 1.05rem; margin: 0.9rem 0 0.35rem; }
+.jd-box ul { margin: 0.3rem 0 0.6rem 1.2rem; }
+.jd-box p { margin: 0.45rem 0; }
+
+.field-row { display: flex; gap: 0.8rem; align-items: center; margin: 0.7rem 0; flex-wrap: wrap; }
+.field-row label { font-size: 0.88rem; font-weight: 600; }
+.field-row input { width: 160px; }
+
+.cand-card {
+  background: #fff; border: 1px solid var(--line); border-radius: 8px;
+  padding: 0.9rem 1.1rem; margin-bottom: 0.7rem;
+}
+.cand-card .cand-top { display: flex; justify-content: space-between; align-items: baseline; gap: 0.8rem; flex-wrap: wrap; }
+.cand-card h4 { font-size: 1rem; }
+.cand-card .score { font-family: var(--font-mono); font-size: 0.8rem; color: var(--agent); font-weight: 600; }
+.cand-card p { font-size: 0.86rem; color: var(--ink-soft); margin-top: 0.3rem; }
+.cand-card .check { display: flex; gap: 0.5rem; align-items: center; margin-top: 0.5rem; }
+.cand-card .check input { width: auto; }
+
+/* scorecard grid */
+.score-table { width: 100%; border-collapse: collapse; font-size: 0.85rem; margin-bottom: 1rem; }
+.score-table th { font-size: 0.66rem; padding: 0.45rem 0.5rem; }
+.score-table td { padding: 0.35rem 0.4rem; border-bottom: 1px solid var(--line); }
+.score-table select, .score-table input { padding: 0.35rem 0.5rem; font-size: 0.84rem; }
+.score-fill-note { font-size: 0.82rem; color: var(--muted); margin-bottom: 0.8rem; }
+
+/* negotiation log */
+.nego-log { background: #fff; border: 1px solid var(--line); border-radius: 8px;
+  padding: 0.8rem 1rem; font-size: 0.86rem; color: var(--ink-soft); margin-bottom: 1rem; }
+
+/* stepper */
+.stepper { list-style: none; }
+.stepper li {
+  position: relative; padding: 0.42rem 0 0.42rem 1.9rem; font-size: 0.9rem; color: var(--muted);
+}
+.stepper li::before {
+  content: ""; position: absolute; left: 0.45rem; top: 0.78rem;
+  width: 9px; height: 9px; border-radius: 50%; background: var(--line);
+}
+.stepper li::after {
+  content: ""; position: absolute; left: 0.78rem; top: 1.45rem; bottom: -0.5rem; width: 1.5px; background: var(--line);
+}
+.stepper li:last-child::after { display: none; }
+.stepper li.done { color: var(--ink-soft); }
+.stepper li.done::before { background: var(--agent); }
+.stepper li.current { color: var(--ink); font-weight: 600; }
+.stepper li.current::before { background: var(--accent); box-shadow: 0 0 0 4px var(--human-soft); }
+
+/* artifacts */
+.artifact { margin-bottom: 0.9rem; }
+.artifact h4 { font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); margin-bottom: 0.3rem; }
+.artifact .mono { font-size: 0.82rem; }
+
+/* timeline */
+.timeline { max-height: 460px; overflow-y: auto; }
+.tl-row { display: grid; grid-template-columns: 64px 110px 70px 1fr; gap: 0.7rem;
+  padding: 0.45rem 0; border-bottom: 1px solid #eceade; font-size: 0.84rem; align-items: baseline; }
+.tl-row .t { font-family: var(--font-mono); font-size: 0.74rem; color: var(--muted); }
+.tl-row .stage { font-family: var(--font-mono); font-size: 0.74rem; color: var(--ink-soft); }
+.tl-actor { font-family: var(--font-mono); font-size: 0.68rem; font-weight: 600; text-transform: uppercase;
+  padding: 0.1rem 0.45rem; border-radius: 99px; justify-self: start; }
+.tl-actor.agent { background: var(--agent-soft); color: var(--agent); }
+.tl-actor.human { background: var(--human-soft); color: var(--accent-dark); }
+.tl-actor.system { background: #e4ecfb; color: var(--system); }
+.tl-row .what { color: var(--ink-soft); }
+.tl-row .what strong { color: var(--ink); font-weight: 600; }
+
+/* busy overlay */
+.busy { position: fixed; inset: 0; background: rgba(14, 17, 22, 0.55); backdrop-filter: blur(3px);
+  display: flex; align-items: center; justify-content: center; z-index: 100; }
+.busy-card { background: var(--card); border-radius: 14px; padding: 2.4rem 3rem; text-align: center; max-width: 420px; }
+.spinner { width: 42px; height: 42px; border: 4px solid var(--line); border-top-color: var(--accent);
+  border-radius: 50%; margin: 0 auto 1.2rem; animation: spin 0.9s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+#busy-timer { margin-top: 0.6rem; color: var(--muted); }
+
+/* toast */
+.toast { position: fixed; bottom: 1.4rem; left: 50%; transform: translateX(-50%);
+  background: var(--ink); color: #fff; padding: 0.8rem 1.3rem; border-radius: 8px;
+  font-size: 0.9rem; z-index: 110; max-width: 90vw; }
+.toast.error { background: #9b1c1c; }
+
+.outcome-hired { color: var(--agent); }
+.outcome-other { color: var(--accent-dark); }

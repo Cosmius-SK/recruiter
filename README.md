@@ -177,11 +177,14 @@ flagged candidates are guaranteed a human look instead of an ATS auto-reject.
 
 ---
 
-## Product website
+## Product website & console
 
 A full multi-page product site (business case + deep technical pages) lives in
 `website/` — Home, Product, Technology, Solutions & ROI, Security & Governance,
-Pricing. Pure static HTML/CSS/JS, no build step:
+Pricing — plus the **TalentFlow Console** at `website/app/`: the product UI
+where you start workflows, watch the pipeline, and answer every human gate
+with forms and buttons (no JSON required). Pure static HTML/CSS/JS, no build
+step:
 
 ```bash
 python -m http.server -d website 8080   # preview at http://localhost:8080
