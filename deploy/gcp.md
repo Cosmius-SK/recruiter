@@ -79,25 +79,39 @@ Point an A record at the VM, then either:
 
 ---
 
-## Option B — Cloud Run (serverless)
+## Option B — Cloud Run (serverless; trusted HTTPS URL)
+
+One service serves **both** the website and the API (the API mounts
+`website/` at `/`). This is also the recommended path when a corporate
+network blocks raw-IP / non-443 / plain-HTTP URLs: Cloud Run gives you a
+`https://….run.app` URL with a valid Google-managed certificate on port 443.
 
 ```bash
-# API — build & deploy from source, key injected from Secret Manager
-gcloud run deploy talentflow-api --source . --region=YOUR_REGION \
-  --set-secrets=GOOGLE_API_KEY=gemini-api-key:latest \
-  --allow-unauthenticated
-
-# Website — static hosting from a bucket (or a second nginx Cloud Run service)
-gsutil mb -l YOUR_REGION gs://your-talentflow-site
-gsutil -m rsync -r website gs://your-talentflow-site
-gsutil web set -m index.html gs://your-talentflow-site
+# From a clone of the repo (e.g. in Cloud Shell):
+gcloud run deploy talentflow --source . --region=us-east1 \
+  --allow-unauthenticated \
+  --min-instances=1 --max-instances=1 \
+  --timeout=900 \
+  --set-env-vars GOOGLE_API_KEY=YOUR_GEMINI_KEY
 ```
 
-**Caveat:** Cloud Run filesystems are ephemeral, so the SQLite checkpointer
-won't persist parked workflows across instances. For Cloud Run, switch the
-checkpointer to **Cloud SQL Postgres** (`langgraph-checkpoint-postgres`,
-swap `SqliteSaver` for `PostgresSaver` in `talentflow/api/app.py`). The VM
-path needs no such change.
+The command prints the service URL, e.g. `https://talentflow-xxxxx-ue.a.run.app`:
+
+| URL | What |
+|---|---|
+| `https://<service-url>/` | Product website |
+| `https://<service-url>/docs` | API explorer |
+
+Notes:
+- `--max-instances=1` keeps all workflow state on one instance (the demo uses
+  SQLite); `--min-instances=1` stops scale-to-zero from discarding it between
+  uses. For production, switch the checkpointer to **Cloud SQL Postgres**
+  (`langgraph-checkpoint-postgres`, swap `SqliteSaver` for `PostgresSaver` in
+  `talentflow/api/app.py`) — then instances can scale freely.
+- Prefer Secret Manager over `--set-env-vars` once past testing:
+  `--set-secrets=GOOGLE_API_KEY=gemini-api-key:latest` (grant the service
+  account `roles/secretmanager.secretAccessor`).
+- The first deploy enables Cloud Build and may take a few minutes.
 
 ---
 

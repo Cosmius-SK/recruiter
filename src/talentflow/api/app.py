@@ -18,11 +18,13 @@ workflow at a time against it, or swap in real connectors for multi-tenancy.
 
 from __future__ import annotations
 
+import os
 import sqlite3
 import uuid
 from typing import Any
 
 from fastapi import FastAPI, HTTPException
+from fastapi.staticfiles import StaticFiles
 from langgraph.checkpoint.sqlite import SqliteSaver
 from langgraph.types import Command
 from pydantic import BaseModel
@@ -134,3 +136,15 @@ def get_timeline(workflow_id: str) -> list[dict]:
     if state is None or not state.values:
         raise HTTPException(404, "Unknown workflow id")
     return [e.model_dump(mode="json") for e in state.values.get("events", [])]
+
+
+# ---------------------------------------------------------------------------
+# Product website (optional): if a `website/` directory exists relative to the
+# working directory (as in the Docker image and the repo root), serve it at /.
+# API routes above take precedence; this enables single-service deployments
+# (e.g. Cloud Run) where one HTTPS URL serves both the site and the API.
+# ---------------------------------------------------------------------------
+
+_website_dir = os.environ.get("TALENTFLOW_WEBSITE_DIR", "website")
+if os.path.isdir(_website_dir):
+    app.mount("/", StaticFiles(directory=_website_dir, html=True), name="website")
