@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pricing — TalentFlow</title>
+  <meta name="description" content="TalentFlow pricing tiers and transparent LLM cost math per requisition.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+
+<header class="nav">
+  <div class="wrap nav-inner">
+    <a class="logo" href="index.html"><span class="mark"></span>Talent<span class="tf-flow">Flow</span></a>
+    <button class="nav-toggle" aria-label="Menu">☰</button>
+    <ul class="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="product.html">Product</a></li>
+      <li><a href="technology.html">Technology</a></li>
+      <li><a href="solutions.html">Solutions</a></li>
+      <li><a href="security.html">Security &amp; Governance</a></li>
+      <li><a href="pricing.html">Pricing</a></li>
+    </ul>
+  </div>
+</header>
+
+<section class="page-hero">
+  <div class="wrap">
+    <span class="kicker">Pricing</span>
+    <h1>Start free on your own infrastructure. Scale when it earns it.</h1>
+    <p class="lede">Illustrative tiers for the enterprise offering — plus the LLM cost math in the open,
+    because a platform that audits everything should audit its own bill.</p>
+  </div>
+</section>
+
+<!-- ============ TIERS ============ -->
+<section>
+  <div class="wrap">
+    <div class="grid cols-3">
+      <div class="card price-card reveal">
+        <h3>Pilot</h3>
+        <div class="price">$0</div>
+        <div class="per">self-hosted · open source</div>
+        <ul>
+          <li>Full lifecycle orchestration, all 8 agents, all 6 gates</li>
+          <li>Run on your GCP project (Compute Engine or Cloud Run)</li>
+          <li>Gemini free tier for the testing phase</li>
+          <li>CLI demo + REST control plane + audit timeline</li>
+          <li>Community support via the repository</li>
+        </ul>
+        <a class="btn btn-ghost" href="https://github.com/Cosmius-SK/recruiter">Deploy from source</a>
+      </div>
+
+      <div class="card price-card featured reveal">
+        <h3>Growth</h3>
+        <div class="price">$1,500<span style="font-size:1rem; font-weight:400">/mo</span></div>
+        <div class="per">up to 25 active requisitions · LLM usage passed through at cost</div>
+        <ul>
+          <li>Everything in Pilot, managed for you</li>
+          <li>Slack / email approval inbox for all six gates</li>
+          <li>ATS &amp; calendar connectors (Greenhouse, Lever, Google, O365)</li>
+          <li>Postgres durable state, SSO, role-based gate ownership</li>
+          <li>Per-requisition cost &amp; cycle-time analytics</li>
+          <li>Business-hours support, 99.5% uptime target</li>
+        </ul>
+        <a class="btn btn-primary" href="#contact">Talk to us</a>
+      </div>
+
+      <div class="card price-card reveal">
+        <h3>Enterprise</h3>
+        <div class="price">Custom</div>
+        <div class="per">unlimited requisitions · your VPC</div>
+        <ul>
+          <li>Deployment in your GCP VPC or fully air-gapped</li>
+          <li>HRIS/BGV/ITSM connectors (Workday, SAP, HireRight, ServiceNow)</li>
+          <li>Custom gates, comp policies and orchestration rules</li>
+          <li>Vertex AI / Bedrock model residency options</li>
+          <li>Bias-audit data exports, SIEM log shipping</li>
+          <li>Dedicated support, 99.9% SLA</li>
+        </ul>
+        <a class="btn btn-ghost" href="#contact">Design a rollout</a>
+      </div>
+    </div>
+    <p class="small muted reveal" style="margin-top:1rem">Pricing shown is illustrative for this demonstration product.</p>
+  </div>
+</section>
+
+<!-- ============ LLM COST MATH ============ -->
+<section class="dark">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <span class="kicker">Cost Transparency</span>
+      <h2>The LLM bill, computed in the open.</h2>
+      <p>A full lifecycle makes ~60–80 model calls; only screening scales with applicant volume
+      (~$0.02/candidate on frontier models, ~$0.004 on fast models). Measured per requisition:</p>
+    </div>
+    <div class="table-card reveal" style="background:var(--dark-card)">
+      <table>
+        <thead><tr><th>Scenario</th><th>Gemini 2.5 Flash</th><th>Claude Opus 4.8</th><th>Tiered (fast screen + frontier close)</th></tr></thead>
+        <tbody>
+          <tr><td>Demo run (7 candidates)</td><td><strong>~$0 (free tier)</strong></td><td>~$1.50–3.00</td><td>~$1–2</td></tr>
+          <tr><td>Real requisition, 200 applicants</td><td>~$0.50–1.50</td><td>~$6–9</td><td><strong>~$3–4</strong></td></tr>
+          <tr><td>50 requisitions / month</td><td>~$25–75</td><td>~$350–450</td><td><strong>~$175</strong></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="grid cols-3" style="margin-top:1.4rem">
+      <div class="card reveal"><h3>Free pilot phase</h3><p>Gemini’s free tier covers complete lifecycle runs — evaluate the whole product for $0 in inference.</p></div>
+      <div class="card reveal"><h3>Tiering built in</h3><p>Per-agent model selection is configuration: fast models for high-volume screening, frontier models where judgement quality pays.</p></div>
+      <div class="card reveal"><h3>Self-auditing spend</h3><p>Token usage lands in the same audit trail as everything else — every requisition reports its own exact cost at wrap-up.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ FAQ ============ -->
+<section id="contact" class="anchor-offset">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <span class="kicker">FAQ</span>
+      <h2>The questions procurement asks first.</h2>
+    </div>
+    <div style="max-width:820px">
+      <details class="reveal"><summary>Does the AI ever reject or hire someone on its own?</summary>
+        <p>No. Agents score, rank, recommend and prepare. Selection decisions are made by named humans at typed gates,
+        and profiles the screener flags as unconventional are <em>guaranteed</em> a human review. The hire decision is
+        always the hiring manager’s.</p></details>
+      <details class="reveal"><summary>What happens if the model provider has an outage?</summary>
+        <p>Workflows are checkpointed at every step: in-flight requisitions park safely and resume when inference returns.
+        Switching providers (Gemini ↔ Claude) is one environment variable — no state is lost.</p></details>
+      <details class="reveal"><summary>Where does our candidate data live?</summary>
+        <p>In your database, on your infrastructure. The only external calls are model inference, and those can run on
+        cloud-resident model endpoints (e.g. Vertex AI) — or fully private models — to satisfy data-processing rules.</p></details>
+      <details class="reveal"><summary>How does this fit our existing ATS — do we have to migrate?</summary>
+        <p>No migration. TalentFlow orchestrates <em>across</em> your existing systems through an adapter layer; the ATS
+        remains the system of record for candidates, the HRIS for budgets and bands.</p></details>
+      <details class="reveal"><summary>Can we customise the gates and policies?</summary>
+        <p>Yes — gates, loop caps, shortlist size, comp rules and routing are explicit configuration and code, not prompt
+        folklore. Adding a gate is ~10 lines plus a payload contract; it ships with tests.</p></details>
+      <details class="reveal"><summary>How do we evaluate it without committing?</summary>
+        <p>Run the open-source pilot on one real requisition in your GCP project with free-tier inference, then compare
+        the audit timeline against your last comparable hire. The data decides.</p></details>
+    </div>
+  </div>
+</section>
+
+<!-- ============ CTA ============ -->
+<section class="tight">
+  <div class="wrap">
+    <div class="cta-band reveal">
+      <div>
+        <h2>One requisition. One afternoon. Zero inference cost.</h2>
+        <p>That’s the pilot. Everything after that is your data talking.</p>
+      </div>
+      <div class="btn-row">
+        <a class="btn btn-primary" href="https://github.com/Cosmius-SK/recruiter">Get the source</a>
+        <a class="btn btn-ghost" href="product.html#demo">Watch the demo</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div class="foot-grid">
+      <div>
+        <a class="logo" href="index.html" style="color:#fff"><span class="mark"></span>Talent<span class="tf-flow">Flow</span></a>
+        <p class="small" style="margin-top:0.8rem">Autonomous, human-governed recruitment lifecycle orchestration.
+           Built on LangGraph with Gemini &amp; Claude.</p>
+      </div>
+      <div><h4>Product</h4><ul>
+        <li><a href="product.html">How it works</a></li>
+        <li><a href="solutions.html">Solutions &amp; ROI</a></li>
+        <li><a href="pricing.html">Pricing</a></li>
+      </ul></div>
+      <div><h4>Technology</h4><ul>
+        <li><a href="technology.html">Architecture</a></li>
+        <li><a href="technology.html#api">API</a></li>
+        <li><a href="security.html">Security &amp; Governance</a></li>
+      </ul></div>
+      <div><h4>Resources</h4><ul>
+        <li><a href="https://github.com/Cosmius-SK/recruiter">Source repository</a></li>
+        <li><a href="https://github.com/Cosmius-SK/recruiter/blob/main/docs/architecture.md">Architecture deep-dive</a></li>
+        <li><a href="https://github.com/Cosmius-SK/recruiter/blob/main/README.md">README</a></li>
+      </ul></div>
+    </div>
+    <div class="foot-note">
+      <span>© 2026 TalentFlow — demonstration enterprise product.</span>
+      <span class="mono">agents act · humans decide · everything audited</span>
+    </div>
+  </div>
+</footer>
+
+<script src="assets/js/main.js"></script>
+</body>
+</html>

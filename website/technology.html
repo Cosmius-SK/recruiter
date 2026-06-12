@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Technology — TalentFlow</title>
+  <meta name="description" content="TalentFlow architecture: LangGraph orchestration, durable execution, parallel agent fan-out, tool-enforced guardrails, and a provider-switchable model layer.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+
+<header class="nav">
+  <div class="wrap nav-inner">
+    <a class="logo" href="index.html"><span class="mark"></span>Talent<span class="tf-flow">Flow</span></a>
+    <button class="nav-toggle" aria-label="Menu">☰</button>
+    <ul class="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="product.html">Product</a></li>
+      <li><a href="technology.html">Technology</a></li>
+      <li><a href="solutions.html">Solutions</a></li>
+      <li><a href="security.html">Security &amp; Governance</a></li>
+      <li><a href="pricing.html">Pricing</a></li>
+    </ul>
+  </div>
+</header>
+
+<section class="page-hero">
+  <div class="wrap">
+    <span class="kicker">Technology</span>
+    <h1>A governed graph of autonomous agents — engineered, not prompted.</h1>
+    <p class="lede">TalentFlow is built on <strong>LangGraph</strong> (durable orchestration, interrupts,
+    parallel fan-out, checkpointing) with frontier LLMs behind a provider-switchable factory.
+    This page is the engineering tour: how routing, state, guardrails and testing actually work.</p>
+  </div>
+</section>
+
+<!-- ============ DESIGN STANCE ============ -->
+<section>
+  <div class="wrap">
+    <div class="section-head reveal">
+      <span class="kicker">Design Stance</span>
+      <h2>Two failure modes, deliberately avoided.</h2>
+    </div>
+    <div class="grid cols-3">
+      <div class="card reveal"><h3>✕ The mega-agent</h3>
+        <p>One agent, thirty tools, routing buried in a prompt. Impossible to govern, audit or test —
+        behaviour drifts with every model update.</p></div>
+      <div class="card reveal"><h3>✕ The rigid pipeline</h3>
+        <p>A fixed script with LLM calls sprinkled in. No autonomy, no adaptivity — RPA with extra steps
+        and extra cost.</p></div>
+      <div class="card reveal" style="border-color:var(--agent)"><h3>✓ The governed graph</h3>
+        <p>Lifecycle policy is explicit, versionable code. Agents are genuinely autonomous <em>inside</em>
+        their stage. Judgement junctures get adaptive LLM routing. Humans hold the gates.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ ARCHITECTURE ============ -->
+<section class="dark">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <span class="kicker">Architecture</span>
+      <h2>Three planes, cleanly separated.</h2>
+    </div>
+    <div class="grid cols-3">
+      <div class="card reveal">
+        <span class="card-num">PLANE 1 · ORCHESTRATION</span>
+        <h3>The lifecycle graph</h3>
+        <p>An 18-node LangGraph <span class="mono">StateGraph</span>. Nodes return
+        <span class="mono">Command(goto=…)</span> so every transition is explicit and testable.
+        Six <span class="mono">interrupt()</span> gates pause for humans; <span class="mono">Send</span>
+        fans screening out in parallel; checkpointing makes all of it durable.</p>
+      </div>
+      <div class="card reveal">
+        <span class="card-num">PLANE 2 · AGENTS</span>
+        <h3>Eight specialists</h3>
+        <p>Each runs an explicit tool-use loop — persona + toolbelt + iteration budget — and must
+        terminate in a <strong>schema-validated structured output</strong> (Pydantic). The graph routes on
+        typed artifacts, never on prose.</p>
+      </div>
+      <div class="card reveal">
+        <span class="card-num">PLANE 3 · INTEGRATIONS</span>
+        <h3>One adapter seam</h3>
+        <p>HRIS, ATS, job boards, calendars, candidate comms, BGV vendor, ITSM — all behind one
+        adapter layer. The shipped mocks are deterministic and seeded; swapping in Workday,
+        Greenhouse or HireRight changes adapters, not agents.</p>
+      </div>
+    </div>
+
+    <div style="margin-top:2.2rem" class="reveal">
+      <div class="term">
+        <div class="term-bar"><i></i><i></i><i></i><span>orchestration graph (abridged)</span></div>
+        <pre>
+START → intake → requisition ──────────────▶ <span class="y">🧑 jd_approval</span> ──▶ <span class="y">🧑 finance_approval*</span>
+                     ▲    └─ budget blocked ─▶ wrapup                │
+                     └────── revise loop ◀────┘                      ▼
+        sourcing ◀── expand (LLM supervisor) ◀── shortlist_gate ◀── <span class="g">screen ×N (parallel Send)</span>
+            │                                        │
+            ▼                                        ├─▶ <span class="y">🧑 shortlist_review*</span>
+        prescreen ──▶ scheduling ──▶ <span class="b">⏸ await_feedback (durable)</span> ──▶ decision
+                                                                        │
+        onboarding ◀── offer ◀──────────────── <span class="y">🧑 hire_decision</span> ◀──────┘
+            │            │  └─ declined ─▶ hire_decision (backup)
+            │            └──▶ <span class="y">🧑 offer_escalation*</span> ─▶ offer
+            ├─▶ <span class="y">🧑 bgv_review*</span> ─▶ wrapup │ failed ─▶ hire_decision
+            └──────────────────────────▶ wrapup → END        <span class="dim">* conditional</span></pre>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ DURABLE EXECUTION ============ -->
+<section>
+  <div class="wrap split">
+    <div class="reveal">
+      <span class="kicker">Durable Execution</span>
+      <h2>Interrupts are the universal wait primitive.</h2>
+      <p style="margin-top:1rem; color:var(--ink-soft)">Every node boundary is checkpointed (SQLite in the demo,
+      Postgres in production). A LangGraph <span class="mono">interrupt()</span> therefore serves both purposes with one
+      mechanism:</p>
+      <p style="margin-top:0.8rem; color:var(--ink-soft)"><strong>Human approvals</strong> — the workflow parks with a typed
+      payload; the decision arrives via <span class="mono">Command(resume=…)</span> from any surface.<br>
+      <strong>External events</strong> — the interview wait parks the graph for days or weeks; an ATS webhook resumes it.
+      The process can die, redeploy and restart in between — workflows continue exactly where they stopped.</p>
+      <p style="margin-top:0.8rem; color:var(--ink-soft)"><strong>Idempotency rule:</strong> a node containing
+      <span class="mono">interrupt()</span> re-executes from its top on resume — so gate nodes contain only pure payload
+      computation, the interrupt, and decision handling. LLM and tool work always lives in nodes that run exactly once.</p>
+    </div>
+    <div class="reveal">
+      <pre>
+<span class="c"># A human gate is ~10 lines. The payload is what an</span>
+<span class="c"># approval inbox renders; the answer resumes the graph.</span>
+<span class="k">def</span> <span class="f">jd_approval_node</span>(state) -> Command[...]:
+    answer = <span class="f">interrupt</span>(jd_approval_payload(state))
+    <span class="k">if not</span> answer[<span class="s">"approved"</span>]:
+        <span class="k">return</span> Command(goto=<span class="s">"requisition"</span>,
+            update={<span class="s">"jd_feedback"</span>: answer[<span class="s">"feedback"</span>]})
+    <span class="k">if</span> proposed > band.base_max:
+        <span class="k">return</span> Command(goto=<span class="s">"finance_approval"</span>, ...)
+    <span class="k">return</span> Command(goto=<span class="s">"sourcing"</span>, ...)</pre>
+      <p class="codecap">orchestrator/graph.py — dynamic routing via Command, gates via interrupt</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ PARALLELISM + AGENT RUNTIME ============ -->
+<section class="tight">
+  <div class="wrap split">
+    <div class="reveal">
+      <pre>
+<span class="c"># Map-reduce: one screening branch per candidate.</span>
+<span class="k">def</span> <span class="f">dispatch_screening</span>(state):
+    screened = {s.candidate_id <span class="k">for</span> s <span class="k">in</span> state[<span class="s">"screening"</span>]}
+    todo = [c <span class="k">for</span> c <span class="k">in</span> state[<span class="s">"candidates"</span>]
+            <span class="k">if</span> c.id <span class="k">not in</span> screened]
+    <span class="k">return</span> [<span class="f">Send</span>(<span class="s">"screen"</span>, {<span class="s">"candidate"</span>: c, ...})
+            <span class="k">for</span> c <span class="k">in</span> todo]
+
+<span class="c"># Results merge through an additive state reducer:</span>
+screening: Annotated[list[ScreeningResult], operator.add]</pre>
+      <p class="codecap">parallel fan-out via Send — 7 candidates or 700, same code</p>
+    </div>
+    <div class="reveal">
+      <span class="kicker">Agent Runtime</span>
+      <h2>Autonomy with a contract.</h2>
+      <p style="margin-top:1rem; color:var(--ink-soft)">Each specialist runs an explicit tool loop (not a black-box
+      prebuilt): the model decides which tools to call and in what order; the runtime executes them, feeds results back,
+      enforces an iteration budget, and captures a full tool trace for the audit log.</p>
+      <p style="margin-top:0.8rem; color:var(--ink-soft)">Every agent then terminates in a <strong>structured output</strong> —
+      <span class="mono">ScreeningResult</span>, <span class="mono">OfferOutcome</span>,
+      <span class="mono">RequisitionDraft</span> — validated against a Pydantic schema. Downstream routing reads typed
+      fields, never parses free text. That contract is what makes a probabilistic component safe to embed in a
+      deterministic lifecycle.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ GUARDRAILS ============ -->
+<section>
+  <div class="wrap split">
+    <div class="reveal">
+      <span class="kicker">Safety Model</span>
+      <h2>Guardrails live in tools. Judgement lives in prompts.</h2>
+      <p style="margin-top:1rem; color:var(--ink-soft)">The compensation ceiling is the canonical example. The Offer Agent
+      is <em>told</em> the ceiling — but the <span class="mono">extend_offer</span> tool <em>enforces</em> it. A jailbroken,
+      confused or hallucinating model cannot exceed comp policy, because the only path to the candidate runs through the
+      tool. Raising the ceiling requires a human decision at the escalation gate — an audited, attributable state change,
+      not a prompt edit.</p>
+      <p style="margin-top:0.8rem; color:var(--ink-soft)"><strong>Trust-but-verify</strong> completes the safety model:
+      after each agent acts, the node validates mandatory artifacts against the systems of record (BGV case opened?
+      tickets raised?) and backfills deterministically when something is missing — logged as a
+      <span class="mono">system</span> event, so agent reliability is measurable from the audit trail.</p>
+    </div>
+    <div class="reveal">
+      <pre>
+<span class="k">@tool</span>
+<span class="k">def</span> <span class="f">extend_offer</span>(candidate_id, base, approved_max):
+    <span class="s">"""Extend an offer and return the candidate's reply."""</span>
+    <span class="k">if</span> base > approved_max:
+        <span class="k">return</span> (<span class="s">"BLOCKED BY POLICY: exceeds the approved "
+                "ceiling. Do NOT retry above it. Report "
+                "status=needs_approval instead."</span>)
+    <span class="k">return</span> store.candidate_offer_response(candidate_id, base)</pre>
+      <p class="codecap">tools.py — policy the model cannot talk its way around</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ MODEL LAYER ============ -->
+<section class="dark">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <span class="kicker">Model Layer</span>
+      <h2>Provider-switchable by one environment variable.</h2>
+      <p>Every agent talks to the model through LangChain’s common interface
+      (<span class="mono">bind_tools</span> + <span class="mono">with_structured_output</span>), so the provider is pure
+      configuration — and per-agent tiering (a fast model for high-volume screening, a frontier model for negotiation)
+      is a config change, not a refactor.</p>
+    </div>
+    <div class="table-card reveal" style="background:var(--dark-card)">
+      <table>
+        <thead><tr><th>Phase</th><th>Provider / model</th><th>Why</th><th>Switch</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Testing / pilot</strong></td><td>Gemini — <span class="mono">gemini-2.5-flash</span></td>
+              <td>Free tier covers full lifecycle runs; strong tool-calling; same Google ecosystem as the GCP deployment.</td>
+              <td><span class="mono">GOOGLE_API_KEY=…</span></td></tr>
+          <tr><td><strong>Production</strong></td><td>Claude — <span class="mono">claude-opus-4-8</span></td>
+              <td>Best-in-class negotiation judgement, JD quality and decision synthesis.</td>
+              <td><span class="mono">ANTHROPIC_API_KEY=…</span></td></tr>
+          <tr><td><strong>Override</strong></td><td>Any LangChain chat model</td>
+              <td>Pin a provider/model explicitly regardless of which keys are present.</td>
+              <td><span class="mono">TALENTFLOW_PROVIDER · TALENTFLOW_MODEL</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- ============ API ============ -->
+<section id="api" class="anchor-offset">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <span class="kicker">Control Plane</span>
+      <h2>Four endpoints run the whole thing.</h2>
+      <p>The REST surface is deliberately small because durable execution does the heavy lifting:
+      starting, inspecting and resuming are the only verbs a workflow needs. This is the seam where
+      Slack approvals, ATS webhooks and your HR portal plug in.</p>
+    </div>
+    <div class="table-card reveal">
+      <table>
+        <thead><tr><th>Endpoint</th><th>Purpose</th></tr></thead>
+        <tbody>
+          <tr><td><span class="mono">POST /workflows</span></td>
+              <td>Start a lifecycle from a hiring brief. Runs autonomously until the first human gate and returns the pending action.</td></tr>
+          <tr><td><span class="mono">GET /workflows/{id}</span></td>
+              <td>Current stage, artifacts (shortlist, offer, onboarding plan) and the parked human action, if any.</td></tr>
+          <tr><td><span class="mono">POST /workflows/{id}/resume</span></td>
+              <td>Deliver a human decision or external event — the body matches the gate’s typed <span class="mono">expects</span> contract.</td></tr>
+          <tr><td><span class="mono">GET /workflows/{id}/timeline</span></td>
+              <td>The full audit trail: every agent action, human decision and system verification, attributed and timestamped.</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- ============ TESTABILITY + STACK ============ -->
+<section class="tight">
+  <div class="wrap split">
+    <div class="reveal">
+      <span class="kicker">Engineering Discipline</span>
+      <h2>The orchestration is tested without an LLM.</h2>
+      <p style="margin-top:1rem; color:var(--ink-soft)">The test suite drives the <em>real</em> graph end-to-end — real
+      nodes, real interrupts, real checkpointing, real mock integrations — with a schema-aware scripted model standing in
+      for the LLM. It asserts that exactly the right human gates fire, in lifecycle order, and the workflow lands on
+      <span class="mono">hired</span>.</p>
+      <p style="margin-top:0.8rem; color:var(--ink-soft)">That separation is the point:
+      <strong>the graph guarantees integrity; the LLM adds quality.</strong> Model upgrades can’t silently break the
+      lifecycle, and CI needs no API keys.</p>
+    </div>
+    <div class="reveal">
+      <div class="table-card">
+        <table>
+          <thead><tr><th>Layer</th><th>Technology</th></tr></thead>
+          <tbody>
+            <tr><td>Orchestration</td><td>LangGraph 1.x — StateGraph, Command, Send, interrupt, checkpointers</td></tr>
+            <tr><td>Agents / LLM</td><td>Gemini 2.5 (testing) · Claude Opus 4.8 (production) via LangChain</td></tr>
+            <tr><td>Contracts</td><td>Pydantic v2 structured outputs end-to-end</td></tr>
+            <tr><td>Control plane</td><td>FastAPI + Uvicorn</td></tr>
+            <tr><td>Persistence</td><td>SQLite checkpointer (demo) → Postgres (production)</td></tr>
+            <tr><td>Hosting</td><td>Docker + nginx on GCP Compute Engine, or Cloud Run</td></tr>
+            <tr><td>Tests</td><td>pytest — offline e2e with a scripted LLM stand-in</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ CTA ============ -->
+<section class="tight">
+  <div class="wrap">
+    <div class="cta-band reveal">
+      <div>
+        <h2>Read the code. It matches this page.</h2>
+        <p>Architecture deep-dive, orchestration graph, agent runtime, tests — all in the repository.</p>
+      </div>
+      <div class="btn-row">
+        <a class="btn btn-primary" href="https://github.com/Cosmius-SK/recruiter">View source</a>
+        <a class="btn btn-ghost" href="security.html">Security &amp; governance</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div class="foot-grid">
+      <div>
+        <a class="logo" href="index.html" style="color:#fff"><span class="mark"></span>Talent<span class="tf-flow">Flow</span></a>
+        <p class="small" style="margin-top:0.8rem">Autonomous, human-governed recruitment lifecycle orchestration.
+           Built on LangGraph with Gemini &amp; Claude.</p>
+      </div>
+      <div><h4>Product</h4><ul>
+        <li><a href="product.html">How it works</a></li>
+        <li><a href="solutions.html">Solutions &amp; ROI</a></li>
+        <li><a href="pricing.html">Pricing</a></li>
+      </ul></div>
+      <div><h4>Technology</h4><ul>
+        <li><a href="technology.html">Architecture</a></li>
+        <li><a href="technology.html#api">API</a></li>
+        <li><a href="security.html">Security &amp; Governance</a></li>
+      </ul></div>
+      <div><h4>Resources</h4><ul>
+        <li><a href="https://github.com/Cosmius-SK/recruiter">Source repository</a></li>
+        <li><a href="https://github.com/Cosmius-SK/recruiter/blob/main/docs/architecture.md">Architecture deep-dive</a></li>
+        <li><a href="https://github.com/Cosmius-SK/recruiter/blob/main/README.md">README</a></li>
+      </ul></div>
+    </div>
+    <div class="foot-note">
+      <span>© 2026 TalentFlow — demonstration enterprise product.</span>
+      <span class="mono">agents act · humans decide · everything audited</span>
+    </div>
+  </div>
+</footer>
+
+<script src="assets/js/main.js"></script>
+</body>
+</html>

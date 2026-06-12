@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Security &amp; Governance — TalentFlow</title>
+  <meta name="description" content="How TalentFlow governs autonomous agents: human oversight by design, code-enforced guardrails, decision provenance and compliance mapping.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+
+<header class="nav">
+  <div class="wrap nav-inner">
+    <a class="logo" href="index.html"><span class="mark"></span>Talent<span class="tf-flow">Flow</span></a>
+    <button class="nav-toggle" aria-label="Menu">☰</button>
+    <ul class="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="product.html">Product</a></li>
+      <li><a href="technology.html">Technology</a></li>
+      <li><a href="solutions.html">Solutions</a></li>
+      <li><a href="security.html">Security &amp; Governance</a></li>
+      <li><a href="pricing.html">Pricing</a></li>
+    </ul>
+  </div>
+</header>
+
+<section class="page-hero">
+  <div class="wrap">
+    <span class="kicker">Security &amp; Governance</span>
+    <h1>Autonomy that survives a compliance review.</h1>
+    <p class="lede">Hiring is a regulated, high-stakes decision domain. TalentFlow’s governance is not a
+    policy document layered on top of the system — it is the system: human oversight, guardrails and
+    provenance are structural properties of the orchestration.</p>
+  </div>
+</section>
+
+<!-- ============ OVERSIGHT MATRIX ============ -->
+<section>
+  <div class="wrap">
+    <div class="section-head reveal">
+      <span class="kicker">Human Oversight</span>
+      <h2>Who decides what — the complete matrix.</h2>
+      <p>Agents never make a consequential decision about a person. They prepare; named human roles decide.
+      Each gate is a typed contract the workflow physically cannot proceed without.</p>
+    </div>
+    <div class="table-card reveal">
+      <table>
+        <thead><tr><th>Gate</th><th>Decision owner</th><th>Fires</th><th>Answer contract</th></tr></thead>
+        <tbody>
+          <tr><td><strong>JD approval</strong></td><td>Hiring manager</td><td>Always</td><td><span class="mono">{approved, feedback?}</span></td></tr>
+          <tr><td><strong>Finance exception</strong></td><td>Finance partner</td><td>Comp ceiling above band</td><td><span class="mono">{approved, approved_max?}</span></td></tr>
+          <tr><td><strong>Shortlist review</strong></td><td>Hiring manager</td><td>Screening flags an unconventional profile</td><td><span class="mono">{include_ids}</span></td></tr>
+          <tr><td><strong>Interview scorecards</strong></td><td>Interview panel</td><td>Always (durable wait)</td><td><span class="mono">{scorecards}</span></td></tr>
+          <tr><td><strong>Hire decision</strong></td><td>Hiring manager</td><td>Always</td><td><span class="mono">{candidate_id | "none"}</span></td></tr>
+          <tr><td><strong>Offer exception</strong></td><td>Recruiter + finance</td><td>Candidate holds out above ceiling</td><td><span class="mono">{approved, new_ceiling?}</span></td></tr>
+          <tr><td><strong>BGV adjudication</strong></td><td>HR / Legal</td><td>Vendor reports a discrepancy</td><td><span class="mono">{cleared, note}</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- ============ GUARDRAILS ============ -->
+<section class="dark">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <span class="kicker">Defence in Depth</span>
+      <h2>Four layers between a model and a mistake.</h2>
+    </div>
+    <div class="grid cols-4">
+      <div class="card reveal"><span class="card-num">LAYER 1</span><h3>Tool-enforced policy</h3>
+        <p>Hard limits live inside tools: offers above the approved ceiling are rejected by code; calendar
+        conflicts are rejected by the booking system. Prompt injection cannot override an
+        <span class="mono">if</span> statement.</p></div>
+      <div class="card reveal"><span class="card-num">LAYER 2</span><h3>Typed contracts</h3>
+        <p>Every agent must terminate in a schema-validated structured output. Malformed or out-of-range
+        results fail validation instead of flowing downstream.</p></div>
+      <div class="card reveal"><span class="card-num">LAYER 3</span><h3>Orchestration policy</h3>
+        <p>Loop caps (JD revisions, sourcing rounds, offer attempts), explicit routing, and least-privilege
+        toolbelts — each agent can only touch its own stage’s systems.</p></div>
+      <div class="card reveal"><span class="card-num">LAYER 4</span><h3>Trust-but-verify</h3>
+        <p>After every agent run, the orchestrator validates mandatory artifacts against systems of record
+        and backfills deterministically — logging every correction for reliability metrics.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ PROVENANCE & DATA ============ -->
+<section>
+  <div class="wrap split">
+    <div class="reveal">
+      <span class="kicker">Decision Provenance</span>
+      <h2>Every hire can answer “why?” — forever.</h2>
+      <p style="margin-top:1rem; color:var(--ink-soft)">For any candidate, the event log reconstructs the complete causal
+      chain: which rubric scored them and how, who reviewed the flag, what the panel said, who made the hire call, what
+      exception was approved and by whom. Adverse-action inquiries, internal audits and post-mortems read from the same
+      record the system wrote in real time — not from memory.</p>
+      <h3 style="margin-top:1.6rem">Data handling</h3>
+      <p style="margin-top:0.5rem; color:var(--ink-soft)">
+      — <strong>Data minimisation in prompts:</strong> agents see only the fields their stage needs; BGV findings, for
+      example, are excluded from screening context by construction.<br>
+      — <strong>Credentials:</strong> LLM keys live in environment configuration or GCP Secret Manager — never in code,
+      prompts or the repository.<br>
+      — <strong>State residency:</strong> all workflow state sits in <em>your</em> database on <em>your</em>
+      infrastructure; the only external calls are model inference.<br>
+      — <strong>Provider choice:</strong> inference can run on Gemini, Claude, or their cloud-resident variants
+      (Vertex AI / Bedrock) to meet data-processing requirements.</p>
+    </div>
+    <div class="reveal">
+      <div class="table-card">
+        <table>
+          <thead><tr><th>Framework</th><th>How TalentFlow maps</th></tr></thead>
+          <tbody>
+            <tr><td><strong>EU AI Act — Art. 14</strong><br><span class="small muted">human oversight for high-risk (employment) AI</span></td>
+                <td>Structural human gates over screening, selection and hiring; humans can override, halt or redirect at every gate.</td></tr>
+            <tr><td><strong>EEOC / Title VII</strong><br><span class="small muted">adverse-action &amp; selection-procedure scrutiny</span></td>
+                <td>Explicit, versioned screening rubric; flagged-profile human review; complete per-candidate decision record.</td></tr>
+            <tr><td><strong>GDPR — Art. 22</strong><br><span class="small muted">automated decision-making rights</span></td>
+                <td>No solely-automated rejection of flagged profiles; provenance supports access/explanation requests.</td></tr>
+            <tr><td><strong>SOC 2 alignment</strong><br><span class="small muted">change control &amp; audit logging</span></td>
+                <td>Orchestration policy is versioned code; the append-only event log is the audit artifact.</td></tr>
+            <tr><td><strong>NYC LL144-style audits</strong><br><span class="small muted">AEDT bias audit readiness</span></td>
+                <td>Structured screening outputs (scores, rationale, outcomes) export directly for disparate-impact analysis.</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="small muted" style="margin-top:0.7rem">Mapping describes system capabilities, not legal advice; formal
+      compliance depends on your deployment and policies.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ DEPLOYMENT ============ -->
+<section class="tight">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <span class="kicker">Deployment Models</span>
+      <h2>Your infrastructure, your data, your keys.</h2>
+    </div>
+    <div class="grid cols-3">
+      <div class="card reveal">
+        <h3>GCP Compute Engine <span class="tag tag-plain">reference</span></h3>
+        <p>Docker Compose on your VM: nginx serves this site and fronts the API; SQLite or Cloud SQL holds
+        durable state; keys in Secret Manager or an instance-local <span class="mono">.env</span>.
+        Ships in <span class="mono">deploy/</span>.</p>
+      </div>
+      <div class="card reveal">
+        <h3>Cloud Run</h3>
+        <p>The same containers, serverless: scale-to-zero between hiring waves, HTTPS and IAM out of the
+        box, Cloud SQL Postgres for checkpoints.</p>
+      </div>
+      <div class="card reveal">
+        <h3>Fully private</h3>
+        <p>Air-gapped option: self-hosted models behind the same LangChain interface, no external inference
+        calls at all. The orchestration doesn’t change.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ CTA ============ -->
+<section class="tight">
+  <div class="wrap">
+    <div class="cta-band reveal">
+      <div>
+        <h2>Bring your security team. We like those meetings.</h2>
+        <p>The governance claims on this page are verifiable in the source — gates, guardrails, audit log and all.</p>
+      </div>
+      <div class="btn-row">
+        <a class="btn btn-primary" href="https://github.com/Cosmius-SK/recruiter">Inspect the source</a>
+        <a class="btn btn-ghost" href="technology.html">Architecture</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div class="foot-grid">
+      <div>
+        <a class="logo" href="index.html" style="color:#fff"><span class="mark"></span>Talent<span class="tf-flow">Flow</span></a>
+        <p class="small" style="margin-top:0.8rem">Autonomous, human-governed recruitment lifecycle orchestration.
+           Built on LangGraph with Gemini &amp; Claude.</p>
+      </div>
+      <div><h4>Product</h4><ul>
+        <li><a href="product.html">How it works</a></li>
+        <li><a href="solutions.html">Solutions &amp; ROI</a></li>
+        <li><a href="pricing.html">Pricing</a></li>
+      </ul></div>
+      <div><h4>Technology</h4><ul>
+        <li><a href="technology.html">Architecture</a></li>
+        <li><a href="technology.html#api">API</a></li>
+        <li><a href="security.html">Security &amp; Governance</a></li>
+      </ul></div>
+      <div><h4>Resources</h4><ul>
+        <li><a href="https://github.com/Cosmius-SK/recruiter">Source repository</a></li>
+        <li><a href="https://github.com/Cosmius-SK/recruiter/blob/main/docs/architecture.md">Architecture deep-dive</a></li>
+        <li><a href="https://github.com/Cosmius-SK/recruiter/blob/main/README.md">README</a></li>
+      </ul></div>
+    </div>
+    <div class="foot-note">
+      <span>© 2026 TalentFlow — demonstration enterprise product.</span>
+      <span class="mono">agents act · humans decide · everything audited</span>
+    </div>
+  </div>
+</footer>
+
+<script src="assets/js/main.js"></script>
+</body>
+</html>

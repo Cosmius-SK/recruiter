@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Product — TalentFlow</title>
+  <meta name="description" content="Stage-by-stage: how TalentFlow's agents run the recruitment lifecycle and exactly where humans stay in control.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+
+<header class="nav">
+  <div class="wrap nav-inner">
+    <a class="logo" href="index.html"><span class="mark"></span>Talent<span class="tf-flow">Flow</span></a>
+    <button class="nav-toggle" aria-label="Menu">☰</button>
+    <ul class="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="product.html">Product</a></li>
+      <li><a href="technology.html">Technology</a></li>
+      <li><a href="solutions.html">Solutions</a></li>
+      <li><a href="security.html">Security &amp; Governance</a></li>
+      <li><a href="pricing.html">Pricing</a></li>
+    </ul>
+  </div>
+</header>
+
+<section class="page-hero">
+  <div class="wrap">
+    <span class="kicker">Product</span>
+    <h1>Every stage, in detail — what agents do, what humans decide.</h1>
+    <p class="lede">The lifecycle below is not a roadmap. It is the shipped orchestration:
+    18 stages, 8 agents, 6 human gates, every alternate path handled.</p>
+  </div>
+</section>
+
+<!-- ============ STAGE BY STAGE ============ -->
+<section>
+  <div class="wrap">
+    <div class="section-head reveal">
+      <span class="kicker">Stage by Stage</span>
+      <h2>Position creation → onboarding</h2>
+    </div>
+
+    <div class="grid" style="gap:1.6rem">
+
+      <div class="card reveal">
+        <span class="card-num">STAGE 1 · REQUISITION &amp; JD</span>
+        <h3>From a three-sentence brief to a budget-checked, market-calibrated JD</h3>
+        <p style="margin-top:0.6rem">The intake step parses the hiring manager’s free-text brief into a structured role
+        specification. The <strong>Requisition Agent</strong> then verifies headcount budget against the HRIS, fetches the approved
+        compensation band for the level, pulls live market benchmarks, and writes a complete, inclusive job description —
+        proposing a salary ceiling it can defend with data.</p>
+        <p style="margin-top:0.6rem"><strong>Humans decide:</strong> the hiring manager approves or red-lines the JD (the agent
+        revises against the feedback, up to a policy limit). If the proposed ceiling exceeds the band, a
+        <strong>finance partner</strong> must approve the exception before sourcing begins. If the department has no budget,
+        the workflow closes immediately with the reason on record — no human time spent.</p>
+        <div class="tag-row"><span class="tag tag-agent">budget check</span><span class="tag tag-agent">comp bands</span><span class="tag tag-agent">market data</span><span class="tag tag-human">JD approval</span><span class="tag tag-human">finance gate</span></div>
+      </div>
+
+      <div class="card reveal">
+        <span class="card-num">STAGE 2 · SOURCING &amp; SCREENING</span>
+        <h3>Top-of-funnel built in minutes, screened in parallel</h3>
+        <p style="margin-top:0.6rem">The <strong>Sourcing Agent</strong> publishes the posting to the boards it judges relevant,
+        searches the passive talent pool semantically, and writes personalised outreach referencing each candidate’s actual
+        background. As applications land, the <strong>Screening Agent</strong> fans out — one parallel evaluation per candidate —
+        scoring against an explicit rubric: must-have coverage 50%, experience depth 30%, domain fit 20%.</p>
+        <p style="margin-top:0.6rem"><strong>Humans decide:</strong> nothing, for clear-cut cases. But the screener is
+        instructed to <em>flag</em> unconventional-but-promising profiles (the bootcamp grad with a 9k-star open-source project)
+        rather than reject them — and flagged profiles are guaranteed a human review before the shortlist is final. If the
+        qualified pool is thin, an LLM supervisor weighs slate quality against delay and can order another sourcing round.</p>
+        <div class="tag-row"><span class="tag tag-agent">multi-board posting</span><span class="tag tag-agent">parallel screening</span><span class="tag tag-system">supervisor routing</span><span class="tag tag-human">flagged-profile review</span></div>
+      </div>
+
+      <div class="card reveal">
+        <span class="card-num">STAGE 3 · PRE-SCREEN &amp; SCHEDULING</span>
+        <h3>Logistics verified, loops booked — zero email ping-pong</h3>
+        <p style="margin-top:0.6rem">The <strong>Pre-screen Agent</strong> holds a short chat with each shortlisted candidate:
+        continued interest, notice period, salary expectation, location/work-mode fit. Candidates whose expectations are
+        wildly outside the band exit here — respectfully, and before anyone’s calendar is touched. The
+        <strong>Scheduling Agent</strong> then reads the panel’s calendars, asks each candidate’s preference once, and books the
+        full loop — reacting to booking conflicts and retrying until every round has a slot.</p>
+        <p style="margin-top:0.6rem"><strong>Humans decide:</strong> nothing. This stage is pure coordination — the single
+        biggest source of recruiter toil, fully removed.</p>
+        <div class="tag-row"><span class="tag tag-agent">candidate chat</span><span class="tag tag-agent">calendar negotiation</span><span class="tag tag-agent">conflict-free booking</span></div>
+      </div>
+
+      <div class="card reveal">
+        <span class="card-num">STAGE 4 · INTERVIEWS (DURABLE WAIT)</span>
+        <h3>The workflow parks. For as long as humans need.</h3>
+        <p style="margin-top:0.6rem">Interviews are human-paced and TalentFlow doesn’t pretend otherwise. The workflow
+        checkpoints and parks — hours, days or weeks — surviving restarts and redeploys. The moment the final scorecard is
+        submitted (via the approval UI or an ATS webhook), the graph resumes exactly where it stopped. No polling, no cron
+        jobs, no “did anyone chase the panel?”.</p>
+        <div class="tag-row"><span class="tag tag-system">checkpointed wait</span><span class="tag tag-human">panel scorecards</span></div>
+      </div>
+
+      <div class="card reveal">
+        <span class="card-num">STAGE 5 · DECISION &amp; OFFER</span>
+        <h3>An evidence-based decision packet, then a guardrailed close</h3>
+        <p style="margin-top:0.6rem">The <strong>Decision-support Agent</strong> consolidates every scorecard and screening
+        signal into ranked hire/no-hire recommendations with honest confidence levels — a one-glance decision packet.
+        After the <strong>hiring manager makes the call</strong>, the <strong>Offer Agent</strong> negotiates: opens fair,
+        reads the candidate’s counter, revises within the approved ceiling, and closes — typically in minutes.</p>
+        <p style="margin-top:0.6rem"><strong>Humans decide:</strong> the hire itself, always. And if the candidate holds out
+        above the approved ceiling, the agent <em>cannot</em> proceed — the tool layer blocks it. The case escalates to a
+        recruiter + finance with the full negotiation log; they approve a new ceiling or hold the line. If a candidate
+        declines, the manager picks a backup from the remaining recommendations — no restart.</p>
+        <div class="tag-row"><span class="tag tag-agent">feedback synthesis</span><span class="tag tag-agent">negotiation</span><span class="tag tag-human">hire decision</span><span class="tag tag-human">offer exception</span></div>
+      </div>
+
+      <div class="card reveal">
+        <span class="card-num">STAGE 6 · ONBOARDING</span>
+        <h3>Day-1 readiness from the second the offer is signed</h3>
+        <p style="margin-top:0.6rem">The <strong>Onboarding Agent</strong> immediately initiates background verification with
+        the vendor, raises ITSM tickets for hardware and access, and schedules a warm pre-boarding email drip across the
+        notice period — the window where most no-shows are lost. The orchestrator then verifies all of it against the
+        systems of record and backfills anything missed.</p>
+        <p style="margin-top:0.6rem"><strong>Humans decide:</strong> only BGV discrepancies. A clean report flows straight
+        through; a discrepancy routes to HR/Legal with the vendor’s exact finding for adjudication. A cleared discrepancy
+        completes the hire; a failed one releases the candidate and returns to backup selection.</p>
+        <div class="tag-row"><span class="tag tag-agent">BGV kickoff</span><span class="tag tag-agent">IT provisioning</span><span class="tag tag-agent">welcome drip</span><span class="tag tag-human">BGV adjudication</span></div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ============ GATE CONTRACTS ============ -->
+<section class="dark">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <span class="kicker">Human-in-the-Loop</span>
+      <h2>Six gates. Typed contracts. One-glance decisions.</h2>
+      <p>Every gate is a structured payload your approval surface renders — Slack modal, email
+         action, or the built-in inbox — and a typed answer the workflow resumes on. Approvals
+         take seconds because the evidence arrives with the question.</p>
+    </div>
+    <div class="grid cols-2">
+      <div class="gate reveal"><h3>JD approval <span class="gate-owner">hiring manager</span></h3>
+        <p>Full JD draft + proposed comp ceiling + budget summary. Answer: <code>{approved, feedback?}</code>.
+        Rejection routes the feedback straight back into the Requisition Agent for a revision cycle.</p></div>
+      <div class="gate reveal"><h3>Finance exception <span class="gate-owner">finance partner</span></h3>
+        <p>Fires only when the proposed ceiling exceeds the approved band. Answer:
+        <code>{approved, approved_max?}</code>. A rejection doesn’t kill the requisition — it proceeds within band.</p></div>
+      <div class="gate reveal"><h3>Shortlist review <span class="gate-owner">hiring manager</span></h3>
+        <p>Fires only when screening flags unconventional-but-promising profiles. Side-by-side cards:
+        auto-shortlist vs flagged. Answer: <code>{include_ids}</code>.</p></div>
+      <div class="gate reveal"><h3>Interview feedback <span class="gate-owner">interview panel</span></h3>
+        <p>The durable wait. The booked loop is displayed; the workflow resumes when scorecards arrive:
+        <code>{scorecards: [...]}</code> — via UI or ATS webhook.</p></div>
+      <div class="gate reveal"><h3>Hire decision <span class="gate-owner">hiring manager</span></h3>
+        <p>Ranked recommendations with confidence and rationale. Answer: <code>{candidate_id | "none"}</code>.
+        The manager decides; the system never hires autonomously.</p></div>
+      <div class="gate reveal"><h3>Offer exception &amp; BGV adjudication <span class="gate-owner">recruiter · finance · HR/legal</span></h3>
+        <p>Out-of-band offers arrive with the full negotiation log: <code>{approved, new_ceiling?}</code>.
+        BGV discrepancies arrive with the vendor’s exact finding: <code>{cleared, note}</code>.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ OUTCOME PATHS ============ -->
+<section>
+  <div class="wrap">
+    <div class="section-head reveal">
+      <span class="kicker">No Dead Ends</span>
+      <h2>Every alternate path is a route, not an exception.</h2>
+    </div>
+    <div class="table-card reveal">
+      <table>
+        <thead><tr><th>Situation</th><th>What the orchestration does</th></tr></thead>
+        <tbody>
+          <tr><td><strong>No headcount budget</strong></td><td>Closes at intake with the HRIS finding on record — zero human time consumed.</td></tr>
+          <tr><td><strong>JD never converges</strong></td><td>Revision loop capped by policy; closes with the full feedback history.</td></tr>
+          <tr><td><strong>Thin candidate pool</strong></td><td>LLM supervisor weighs proceeding vs another sourcing round; loops capped by policy.</td></tr>
+          <tr><td><strong>All candidates fail pre-screen</strong></td><td>Expands sourcing if rounds remain; otherwise closes with reasons per candidate.</td></tr>
+          <tr><td><strong>Candidate declines the offer</strong></td><td>Releases them, returns to the hiring manager for a backup pick from existing recommendations.</td></tr>
+          <tr><td><strong>BGV fails adjudication</strong></td><td>Releases the candidate, returns to backup selection — the pipeline isn’t restarted.</td></tr>
+          <tr><td><strong>Manager decides “no hire”</strong></td><td>Closes cleanly with the complete decision packet retained for audit.</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- ============ AUDIT ============ -->
+<section class="tight">
+  <div class="wrap split">
+    <div class="reveal">
+      <span class="kicker">Always On the Record</span>
+      <h2>The audit trail is the product’s memory.</h2>
+      <p style="margin-top:1rem; color:var(--ink-soft)">Every tool call, every agent conclusion, every human approval is an
+      append-only event with a timestamp, a stage, and an actor — <span class="mono">agent</span>,
+      <span class="mono">human</span> or <span class="mono">system</span>. That gives you decision provenance per candidate,
+      cycle-time per stage, your automation-vs-touch ratio, and a measurable agent reliability signal — for free.</p>
+      <p style="margin-top:0.8rem; color:var(--ink-soft)">It’s also your compliance story: who screened, on what rubric,
+      who reviewed the flags, who made the hire call, who approved the exception.</p>
+    </div>
+    <div class="term reveal">
+      <div class="term-bar"><i></i><i></i><i></i><span>workflow timeline — REQ-7F3A21</span></div>
+      <pre>
+<span class="dim">10:02:11  intake        </span><span class="g">agent </span> Parsed hiring brief
+<span class="dim">10:02:38  requisition   </span><span class="b">system</span> HRIS budget check — APPROVED
+<span class="dim">10:03:55  requisition   </span><span class="g">agent </span> JD drafted — ceiling $185,000
+<span class="dim">10:09:14  jd_approval   </span><span class="y">human </span> JD approved by Asha Menon
+<span class="dim">10:11:42  screening     </span><span class="g">agent </span> 7 candidates screened (parallel)
+<span class="dim">10:14:03  shortlist     </span><span class="y">human </span> Flagged profile added to shortlist
+<span class="dim">10:26:51  scheduling    </span><span class="g">agent </span> 12 interviews booked, 0 conflicts
+<span class="dim">— workflow parked 6 days (interviews) —</span>
+<span class="dim">09:18:22  interviews    </span><span class="y">human </span> 12 scorecards submitted
+<span class="dim">09:19:40  hire_decision </span><span class="y">human </span> Decision: hire — cand-priya
+<span class="dim">09:24:17  offer         </span><span class="y">human </span> Offer exception approved — $192,000
+<span class="dim">09:26:02  onboarding    </span><span class="g">agent </span> BGV opened · IT-0021 · IT-0022
+<span class="dim">09:31:48  bgv_review    </span><span class="y">human </span> Discrepancy cleared
+<span class="dim">09:31:49  wrapup        </span><span class="b">system</span> Outcome: <span class="g">HIRED</span> — day-1 ready</pre>
+    </div>
+  </div>
+</section>
+
+<!-- ============ DEMO ============ -->
+<section id="demo" class="anchor-offset">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <span class="kicker">See It Run</span>
+      <h2>The whole lifecycle, in one terminal.</h2>
+      <p>Ship-ready demo included: interactive mode makes you every approver; auto mode simulates
+         them so you can watch a brief become a hire hands-free.</p>
+    </div>
+    <div class="term reveal" style="max-width:760px">
+      <div class="term-bar"><i></i><i></i><i></i><span>talentflow-demo</span></div>
+      <pre>
+$ <span class="g">pip install -e .</span>
+$ <span class="g">cp .env.example .env</span>   <span class="dim"># add GOOGLE_API_KEY (free tier) or ANTHROPIC_API_KEY</span>
+$ <span class="g">talentflow-demo</span>        <span class="dim"># you play every human gate</span>
+$ <span class="g">talentflow-demo --auto</span> <span class="dim"># simulated approvers, hands-free run</span>
+
+<span class="y">⏸ HUMAN GATE — Approve job description — Senior Backend Engineer</span>
+<span class="dim">  Assignee: Asha Menon · proposed ceiling $185,000 (band max $185,000)</span>
+<span class="b">Approve this JD? [y/n]:</span> _</pre>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div class="foot-grid">
+      <div>
+        <a class="logo" href="index.html" style="color:#fff"><span class="mark"></span>Talent<span class="tf-flow">Flow</span></a>
+        <p class="small" style="margin-top:0.8rem">Autonomous, human-governed recruitment lifecycle orchestration.
+           Built on LangGraph with Gemini &amp; Claude.</p>
+      </div>
+      <div><h4>Product</h4><ul>
+        <li><a href="product.html">How it works</a></li>
+        <li><a href="solutions.html">Solutions &amp; ROI</a></li>
+        <li><a href="pricing.html">Pricing</a></li>
+      </ul></div>
+      <div><h4>Technology</h4><ul>
+        <li><a href="technology.html">Architecture</a></li>
+        <li><a href="technology.html#api">API</a></li>
+        <li><a href="security.html">Security &amp; Governance</a></li>
+      </ul></div>
+      <div><h4>Resources</h4><ul>
+        <li><a href="https://github.com/Cosmius-SK/recruiter">Source repository</a></li>
+        <li><a href="https://github.com/Cosmius-SK/recruiter/blob/main/docs/architecture.md">Architecture deep-dive</a></li>
+        <li><a href="https://github.com/Cosmius-SK/recruiter/blob/main/README.md">README</a></li>
+      </ul></div>
+    </div>
+    <div class="foot-note">
+      <span>© 2026 TalentFlow — demonstration enterprise product.</span>
+      <span class="mono">agents act · humans decide · everything audited</span>
+    </div>
+  </div>
+</footer>
+
+<script src="assets/js/main.js"></script>
+</body>
+</html>

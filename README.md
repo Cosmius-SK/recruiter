@@ -4,8 +4,10 @@ TalentFlow is a working multi-agent system that runs the **entire recruitment
 lifecycle — position creation to onboarding — autonomously**, while keeping a
 human decision-maker in the loop at exactly the checkpoints that matter and
 nowhere else. It is built on **LangGraph** (durable orchestration, interrupts,
-parallel fan-out, checkpointing) with **Claude** (`claude-opus-4-8`) powering
-every specialist agent.
+parallel fan-out, checkpointing) with a **provider-switchable model layer**
+powering every specialist agent: **Gemini** (`gemini-2.5-flash`, free tier)
+for the testing phase, **Claude** (`claude-opus-4-8`) for production — one
+env var flips it, zero code changes.
 
 The thesis it demonstrates: most recruitment cycle time is not interviews or
 notice periods — it is **administrative latency between steps** (drafting,
@@ -116,7 +118,10 @@ src/talentflow/
 
 ```bash
 pip install -e ".[dev]"
-export ANTHROPIC_API_KEY=sk-ant-...
+
+# Credentials: copy the template and add ONE key (Gemini free tier is enough
+# for the whole testing phase — create it at https://aistudio.google.com/apikey)
+cp .env.example .env        # then edit: GOOGLE_API_KEY=... or ANTHROPIC_API_KEY=...
 
 # Full lifecycle in one terminal — you play every approver:
 talentflow-demo
@@ -169,6 +174,36 @@ human decision moments** — typically 30–50 days total cycle down to the
 irreducible human core — while *increasing* governance: every action is
 audited, every exception is escalated, comp policy is enforced by code, and
 flagged candidates are guaranteed a human look instead of an ATS auto-reject.
+
+---
+
+## Product website
+
+A full multi-page product site (business case + deep technical pages) lives in
+`website/` — Home, Product, Technology, Solutions & ROI, Security & Governance,
+Pricing. Pure static HTML/CSS/JS, no build step:
+
+```bash
+python -m http.server -d website 8080   # preview at http://localhost:8080
+```
+
+In the GCP deployment below, nginx serves it at `/` with the API at `/api/`.
+
+## Deploy on GCP
+
+The reference deployment is **Docker Compose on your Compute Engine VM** —
+nginx serves the website and fronts the API; workflow state persists on a
+volume:
+
+```bash
+git clone https://github.com/Cosmius-SK/recruiter.git && cd recruiter
+cp .env.example .env          # add GOOGLE_API_KEY (ideally from Secret Manager)
+docker compose up -d --build
+# Website: http://<vm-ip>/      API docs: http://<vm-ip>/api/docs
+```
+
+Step-by-step instructions (firewall, Secret Manager, HTTPS, plus a Cloud Run
+alternative) are in [`deploy/gcp.md`](deploy/gcp.md).
 
 ---
 

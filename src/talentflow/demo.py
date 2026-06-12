@@ -3,8 +3,10 @@
     talentflow-demo                # interactive: you play every human approver
     talentflow-demo --auto         # the humans are simulated (hands-free run)
 
-Requires ANTHROPIC_API_KEY. The enterprise systems are seeded mocks; the
-agents, orchestration, interrupts and audit trail are the real thing.
+Requires an LLM key: GOOGLE_API_KEY (Gemini, default for testing) or
+ANTHROPIC_API_KEY (Claude) — in the environment or a local .env file. The
+enterprise systems are seeded mocks; the agents, orchestration, interrupts
+and audit trail are the real thing.
 """
 
 from __future__ import annotations

@@ -131,14 +131,22 @@ each specialist's trace. This yields, for free:
 
 ## 8. Model strategy
 
-All agents run on `claude-opus-4-8` via `langchain-anthropic` (which wraps the
-official Anthropic SDK). One factory (`talentflow/llm.py`) owns model
-construction, so per-agent model tiering (e.g. a smaller model for the
-high-volume parallel screening, Opus for negotiation and decision synthesis)
-is a config change, not a refactor. Sampling parameters are deliberately not
-set — Opus 4.7+ rejects them. Every agent terminates in a structured output
-(`with_structured_output` on a Pydantic schema), so downstream routing never
-parses prose.
+One factory (`talentflow/llm.py`) owns model construction, and every agent
+talks to it through LangChain's common interface (`bind_tools` +
+`with_structured_output`), so the provider is pure configuration:
+
+- **Gemini** (`gemini-2.5-flash` via `langchain-google-genai`) — testing-phase
+  default; the free tier makes full lifecycle runs effectively free.
+- **Claude** (`claude-opus-4-8` via `langchain-anthropic`, wrapping the
+  official Anthropic SDK) — production target. Sampling parameters are
+  deliberately not set — Opus 4.7+ rejects them.
+
+Resolution: explicit `TALENTFLOW_PROVIDER`, else whichever of
+`GOOGLE_API_KEY` / `ANTHROPIC_API_KEY` is present (Google wins). The same
+seam supports per-agent model tiering (a cheap model for high-volume parallel
+screening, a frontier model for negotiation and decision synthesis) as a
+config change, not a refactor. Every agent terminates in a structured output
+(Pydantic schema), so downstream routing never parses prose.
 
 ## 9. Extension points
 

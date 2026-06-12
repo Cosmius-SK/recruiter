@@ -1,6 +1,7 @@
 """Runtime configuration, overridable via TALENTFLOW_* environment variables."""
 
 from functools import lru_cache
+from typing import Literal
 
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
@@ -8,8 +9,13 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 class Settings(BaseSettings):
     model_config = SettingsConfigDict(env_prefix="TALENTFLOW_", env_file=".env", extra="ignore")
 
-    model: str = "claude-opus-4-8"
+    # LLM provider: "gemini" (testing phase) or "anthropic" (production).
+    # "auto" picks from whichever API key is present (GOOGLE_API_KEY wins).
+    provider: Literal["auto", "gemini", "anthropic"] = "auto"
+    # Empty string -> per-provider default (gemini-2.5-flash / claude-opus-4-8).
+    model: str = ""
     max_tokens: int = 4096
+
     checkpoint_db: str = "talentflow_checkpoints.sqlite"
     random_seed: int = 42
 

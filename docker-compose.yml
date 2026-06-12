@@ -1,0 +1,27 @@
+# TalentFlow on a single VM: nginx serves the product website and fronts the API.
+#   1. cp .env.example .env   (add GOOGLE_API_KEY or ANTHROPIC_API_KEY)
+#   2. docker compose up -d --build
+#   Website: http://<vm-ip>/        API: http://<vm-ip>/api/docs
+services:
+  api:
+    build: .
+    env_file: .env
+    environment:
+      TALENTFLOW_CHECKPOINT_DB: /data/talentflow_checkpoints.sqlite
+    volumes:
+      - talentflow-data:/data
+    restart: unless-stopped
+
+  web:
+    image: nginx:1.27-alpine
+    ports:
+      - "80:80"
+    volumes:
+      - ./website:/usr/share/nginx/html:ro
+      - ./deploy/nginx.conf:/etc/nginx/conf.d/default.conf:ro
+    depends_on:
+      - api
+    restart: unless-stopped
+
+volumes:
+  talentflow-data:
