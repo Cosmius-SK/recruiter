@@ -127,3 +127,5 @@ textarea:focus, input:focus, select:focus { outline: 2px solid var(--accent); bo
 
 .outcome-hired { color: var(--agent); }
 .outcome-other { color: var(--accent-dark); }
+
+.busy-detail { margin-top: 0.7rem; color: var(--agent); max-width: 340px; }

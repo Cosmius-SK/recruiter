@@ -90,7 +90,7 @@ network blocks raw-IP / non-443 / plain-HTTP URLs: Cloud Run gives you a
 # From a clone of the repo (e.g. in Cloud Shell):
 gcloud run deploy talentflow --source . --region=us-east1 \
   --allow-unauthenticated \
-  --min-instances=1 --max-instances=1 \
+  --no-cpu-throttling --min-instances=1 --max-instances=1 \
   --timeout=900 \
   --set-env-vars GOOGLE_API_KEY=YOUR_GEMINI_KEY
 ```
@@ -100,12 +100,16 @@ The command prints the service URL, e.g. `https://talentflow-xxxxx-ue.a.run.app`
 | URL | What |
 |---|---|
 | `https://<service-url>/` | Product website |
+| `https://<service-url>/app/` | **TalentFlow Console** (the product UI) |
 | `https://<service-url>/docs` | API explorer |
 
 Notes:
+- **`--no-cpu-throttling` is required.** The graph runs in a background thread
+  after the HTTP request returns; without always-allocated CPU, Cloud Run
+  pauses that thread between requests and workflows stall. `--min-instances=1`
+  keeps one warm instance so in-memory run status and SQLite state persist.
 - `--max-instances=1` keeps all workflow state on one instance (the demo uses
-  SQLite); `--min-instances=1` stops scale-to-zero from discarding it between
-  uses. For production, switch the checkpointer to **Cloud SQL Postgres**
+  SQLite). For production, switch the checkpointer to **Cloud SQL Postgres**
   (`langgraph-checkpoint-postgres`, swap `SqliteSaver` for `PostgresSaver` in
   `talentflow/api/app.py`) — then instances can scale freely.
 - Prefer Secret Manager over `--set-env-vars` once past testing:

@@ -100,14 +100,22 @@ function toast(msg, isError) {
 function setBusy(on, msg) {
   $("#busy").hidden = !on;
   if (on) {
-    $("#busy-msg").textContent = msg || "Agents are working…";
-    const started = Date.now();
-    $("#busy-timer").textContent = "0:00";
-    busyTimer = setInterval(() => {
-      const s = Math.floor((Date.now() - started) / 1000);
-      $("#busy-timer").textContent = `${Math.floor(s / 60)}:${String(s % 60).padStart(2, "0")}`;
-    }, 1000);
+    if (msg) $("#busy-msg").textContent = msg;
+    setBusyDetail("");
+    if (!busyTimer) {
+      const started = Date.now();
+      $("#busy-timer").textContent = "0:00";
+      busyTimer = setInterval(() => {
+        const s = Math.floor((Date.now() - started) / 1000);
+        $("#busy-timer").textContent = `${Math.floor(s / 60)}:${String(s % 60).padStart(2, "0")}`;
+      }, 1000);
+    }
   } else if (busyTimer) { clearInterval(busyTimer); busyTimer = null; }
+}
+
+function setBusyDetail(text) {
+  const el = $("#busy-detail");
+  if (el) { el.textContent = text || ""; el.hidden = !text; }
 }
 
 function setWorkflow(id) {
@@ -129,48 +137,89 @@ async function api(path, options) {
 
 /* ----------------------------- API actions ---------------------------- */
 
+const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+
 async function startWorkflow() {
   const brief = $("#brief").value.trim();
   if (!brief) { toast("Write a brief first.", true); return; }
   setBusy(true, "Parsing the brief, checking budget, drafting the JD…");
   try {
-    const snap = await api("/workflows", {
+    const ack = await api("/workflows", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ brief }),
     });
-    setWorkflow(snap.workflow_id);
-    render(snap);
-    await loadTimeline();
-  } catch (e) { toast("Start failed — " + e.message, true); }
-  setBusy(false);
+    setWorkflow(ack.workflow_id);
+    await pollUntilSettled();
+  } catch (e) { setBusy(false); toast("Start failed — " + e.message, true); }
 }
 
 async function resume(decision, busyMsg) {
   setBusy(true, busyMsg || "Decision delivered — agents are continuing…");
   try {
-    const snap = await api(`/workflows/${wfId}/resume`, {
+    await api(`/workflows/${wfId}/resume`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(decision),
     });
+    await pollUntilSettled();
+  } catch (e) { setBusy(false); toast("Resume failed — " + e.message, true); }
+}
+
+// Poll the workflow until it stops running (awaiting a human, completed, or errored).
+// Each poll is a tiny, fast request — safe behind corporate proxies.
+async function pollUntilSettled() {
+  for (;;) {
+    let snap;
+    try {
+      snap = await api(`/workflows/${wfId}`);
+    } catch (e) {
+      // transient network hiccup — keep polling a few more times
+      await sleep(3000);
+      continue;
+    }
+    if (snap.status === "running") {
+      await showRunningProgress();
+      await sleep(2500);
+      continue;
+    }
+    setBusy(false);
+    if (snap.status === "error") {
+      toast("The agents hit an error — " + (snap.error || "unknown"), true);
+      await loadTimeline();
+      $("#panel-timeline").hidden = false;
+      return;
+    }
     render(snap);
     await loadTimeline();
-  } catch (e) { toast("Resume failed — " + e.message, true); }
-  setBusy(false);
+    return;
+  }
+}
+
+// While running, surface the latest agent action under the spinner.
+async function showRunningProgress() {
+  try {
+    const events = await api(`/workflows/${wfId}/timeline`);
+    if (events && events.length) {
+      const last = events[events.length - 1];
+      setBusyDetail(`${last.stage}: ${last.action}${last.detail ? " — " + last.detail : ""}`);
+    }
+  } catch (e) { /* best-effort */ }
 }
 
 async function refresh() {
   setBusy(true, "Loading workflow…");
   try {
     const snap = await api(`/workflows/${wfId}`);
+    if (snap.status === "running") { await pollUntilSettled(); return; }
+    setBusy(false);
     render(snap);
     await loadTimeline();
   } catch (e) {
+    setBusy(false);
     toast("Could not load workflow — " + e.message, true);
     showStart();
   }
-  setBusy(false);
 }
 
 async function loadTimeline() {
