@@ -10,9 +10,10 @@ RUN pip install --no-cache-dir .
 # Product website, served by the API at / (single-service deployments).
 COPY website ./website
 
-# Durable workflow checkpoints live on a volume so containers are disposable.
-ENV TALENTFLOW_CHECKPOINT_DB=/data/talentflow_checkpoints.sqlite
-VOLUME /data
+# Default the checkpoint DB to /tmp, which is writable on Cloud Run (the rest of
+# the filesystem is read-only there). The docker-compose/VM setup overrides this
+# with /data and mounts a persistent volume for durable checkpoints.
+ENV TALENTFLOW_CHECKPOINT_DB=/tmp/talentflow_checkpoints.sqlite
 
 EXPOSE 8000
 # Honour Cloud Run's PORT; default to 8000 for the docker-compose/nginx setup.
