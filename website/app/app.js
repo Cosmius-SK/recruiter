@@ -42,7 +42,12 @@ let busyTimer = null;
 document.addEventListener("DOMContentLoaded", async () => {
   $("#brief").value = DEFAULT_BRIEF;
   $("#btn-start").addEventListener("click", startWorkflow);
-  $("#btn-new").addEventListener("click", () => { wfId = null; localStorage.removeItem("tf_workflow_id"); showStart(); });
+  $("#btn-new").addEventListener("click", () => {
+    wfId = null;
+    localStorage.removeItem("tf_workflow_id");
+    setBusy(false);   // always dismiss a stuck overlay
+    showStart();
+  });
   $("#btn-load").addEventListener("click", () => {
     const id = $("#load-id").value.trim();
     if (id) { setWorkflow(id); refresh(); }
@@ -125,8 +130,22 @@ function setWorkflow(id) {
   $("#wf-badge").hidden = false;
 }
 
-async function api(path, options) {
-  const r = await fetch(API_BASE + path, options);
+async function api(path, options = {}) {
+  // Time out swallowed requests instead of hanging forever (corporate proxies
+  // sometimes hold a connection open without ever forwarding it).
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), 45000);
+  let r;
+  try {
+    r = await fetch(API_BASE + path, { ...options, signal: controller.signal });
+  } catch (e) {
+    if (e.name === "AbortError") {
+      throw new Error("request timed out — the network may be blocking it (try a different network / mobile hotspot)");
+    }
+    throw new Error("network error — the request could not be sent (a proxy or firewall may be blocking it)");
+  } finally {
+    clearTimeout(timer);
+  }
   if (!r.ok) {
     let detail = r.statusText;
     try { detail = (await r.json()).detail || detail; } catch (e) { /* keep statusText */ }
@@ -169,12 +188,19 @@ async function resume(decision, busyMsg) {
 // Poll the workflow until it stops running (awaiting a human, completed, or errored).
 // Each poll is a tiny, fast request — safe behind corporate proxies.
 async function pollUntilSettled() {
+  let failures = 0;
   for (;;) {
     let snap;
     try {
       snap = await api(`/workflows/${wfId}`);
+      failures = 0;
     } catch (e) {
-      // transient network hiccup — keep polling a few more times
+      // Tolerate a few transient hiccups, then give up so the UI never hangs.
+      if (++failures >= 4) {
+        setBusy(false);
+        toast("Lost contact with the server — " + e.message, true);
+        return;
+      }
       await sleep(3000);
       continue;
     }
