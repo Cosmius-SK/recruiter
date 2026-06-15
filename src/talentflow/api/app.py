@@ -47,6 +47,15 @@ app = FastAPI(
     version="0.1.0",
 )
 
+
+@app.middleware("http")
+async def no_store(request, call_next):
+    # The console is a single-page app served from the image; never let the
+    # browser cache stale HTML/JS/CSS (a redeploy must always take effect).
+    response = await call_next(request)
+    response.headers["Cache-Control"] = "no-store"
+    return response
+
 # ---------------------------------------------------------------------------
 # Graph + checkpointers
 #   - one write connection (the background run thread) in WAL mode
