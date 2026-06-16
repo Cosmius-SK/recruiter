@@ -53,7 +53,11 @@ document.addEventListener("DOMContentLoaded", async () => {
     if (id) { setWorkflow(id); refresh(); }
   });
   await detectApiBase();
-  if (wfId) { setWorkflow(wfId); refresh(); } else { showStart(); }
+  // Always start fresh on load — never auto-resume a stale id into a blocking
+  // spinner. Resume an existing workflow explicitly via the "open" box.
+  localStorage.removeItem("tf_workflow_id");
+  wfId = null;
+  showStart();
 });
 
 async function detectApiBase() {
