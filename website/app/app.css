@@ -113,6 +113,9 @@ textarea:focus, input:focus, select:focus { outline: 2px solid var(--accent); bo
 /* busy overlay */
 .busy { position: fixed; inset: 0; background: rgba(14, 17, 22, 0.55); backdrop-filter: blur(3px);
   display: flex; align-items: center; justify-content: center; z-index: 100; }
+/* The author `.busy { display: flex }` rule outranks the UA `[hidden]` rule, so
+   the `hidden` attribute alone won't hide the overlay — make it explicit. */
+.busy[hidden] { display: none; }
 .busy-card { background: var(--card); border-radius: 14px; padding: 2.4rem 3rem; text-align: center; max-width: 420px; }
 .spinner { width: 42px; height: 42px; border: 4px solid var(--line); border-top-color: var(--accent);
   border-radius: 50%; margin: 0 auto 1.2rem; animation: spin 0.9s linear infinite; }
