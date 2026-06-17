@@ -1,4 +1,4 @@
-/* TalentFlow Console — drives the workflow API with forms instead of raw JSON. */
+/* Hire Console — drives the workflow API with forms instead of raw JSON. */
 
 "use strict";
 

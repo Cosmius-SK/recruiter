@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 100" role="img" aria-label="Hire">
+  <rect x="4" y="8" width="11" height="84" rx="2" fill="#1B5FD9"/>
+  <rect x="27" y="8" width="84" height="84" rx="6" fill="#E8B71D"/>
+  <rect x="49" y="25" width="13" height="50" rx="2" fill="#FFFFFF"/>
+  <rect x="76" y="25" width="13" height="50" rx="2" fill="#FFFFFF"/>
+  <rect x="49" y="43.5" width="40" height="13" rx="2" fill="#FFFFFF"/>
+  <text x="130" y="72" font-family="Rokkitt, 'DejaVu Serif', Georgia, serif" font-weight="700" font-size="62" letter-spacing="-1" fill="#15181E">Hire</text>
+</svg>

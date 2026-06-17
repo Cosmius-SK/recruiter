@@ -3,38 +3,55 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Console — TalentFlow</title>
-  <meta name="description" content="TalentFlow Console: run hiring workflows and answer human gates.">
+  <title>Console — Hire (self-contained)</title>
+  <meta name="description" content="Hire Console: run hiring workflows and answer human gates.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Rokkitt:wght@500;600;700;800&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="icon" type="image/svg+xml" href="../assets/brand/logo-favicon.svg">
+  <link rel="apple-touch-icon" href="../assets/brand/logo-favicon.svg">
   <style>
 /* ============================================================
-   TalentFlow — product site design system
-   Editorial-industrial: paper ground, ink type, vermilion for
-   human judgement, green for agent autonomy.
+   Hire — product site design system
+   Editorial-industrial: paper ground, ink type, gold for the
+   human gates, green for agent autonomy, blue as the brand line.
+   Palette: blue #1B5FD9 · gold #E8B71D · green #3F6F54 ·
+            sky #6E91C8 · stone #57534E · ink #15181E
    ============================================================ */
 
 :root {
   --paper: #f6f5f0;
   --card: #ffffff;
-  --ink: #0e1116;
+  --ink: #15181E;
   --ink-soft: #3c424c;
-  --muted: #6b7280;
+  --muted: #57534E;           /* stone */
   --line: #d9d6cb;
-  --accent: #e8490f;          /* human gates / CTAs */
-  --accent-dark: #c23a09;
-  --agent: #0e8a5f;           /* autonomous agents */
-  --agent-soft: #e3f2eb;
-  --human-soft: #fdeae0;
-  --system: #2563eb;
-  --dark: #0e1116;
-  --dark-card: #161b23;
+
+  --brand: #1B5FD9;           /* blue — brand line, primary action */
+  --brand-dark: #1647a8;
+  --brand-soft: #e6eefb;
+
+  --accent: #1B5FD9;          /* primary CTA / highlight = brand blue */
+  --accent-dark: #1647a8;
+
+  --gold: #E8B71D;            /* human gates / judgement */
+  --gold-dark: #b88c0d;
+  --human-soft: #fbf0cf;
+
+  --agent: #3F6F54;           /* autonomous agents */
+  --agent-soft: #e4efe8;
+
+  --system: #6E91C8;          /* sky — system / integration */
+  --system-soft: #e6edf7;
+
+  --dark: #15181E;
+  --dark-card: #1c2129;
   --dark-line: #2a313c;
   --dark-text: #e8e6df;
   --dark-muted: #9aa3b2;
   --radius: 10px;
   --maxw: 1180px;
-  --font-display: "Space Grotesk", "Inter", system-ui, sans-serif;
+  --font-display: "Rokkitt", Georgia, "Times New Roman", serif;
+  --font-brand: "Rokkitt", Georgia, serif;
   --font-body: "Inter", system-ui, -apple-system, sans-serif;
   --font-mono: "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, monospace;
 }
@@ -128,15 +145,12 @@ section.tight { padding: 3rem 0; }
 }
 
 .logo {
-  font-family: var(--font-display);
-  font-weight: 700; font-size: 1.18rem; text-decoration: none;
-  display: flex; align-items: center; gap: 0.5rem;
+  font-family: var(--font-brand);
+  font-weight: 700; font-size: 1.42rem; text-decoration: none;
+  display: flex; align-items: center; gap: 0.5rem; line-height: 1;
 }
-.logo .mark {
-  width: 14px; height: 14px; background: var(--accent);
-  display: inline-block; clip-path: polygon(0 0, 100% 0, 100% 65%, 65% 100%, 0 100%);
-}
-.logo .tf-flow { color: var(--accent); }
+.logo .brand-mark { height: 30px; width: auto; display: block; }
+.logo .brand-word { letter-spacing: -0.01em; }
 
 .nav-links { display: flex; align-items: center; gap: 1.7rem; list-style: none; }
 .nav-links a {
@@ -227,8 +241,8 @@ section.tight { padding: 3rem 0; }
   border-radius: 99px; margin: 0 0.3rem 0.3rem 0;
 }
 .tag-agent { background: var(--agent-soft); color: var(--agent); }
-.tag-human { background: var(--human-soft); color: var(--accent-dark); }
-.tag-system { background: #e4ecfb; color: var(--system); }
+.tag-human { background: var(--human-soft); color: var(--gold-dark); }
+.tag-system { background: var(--system-soft); color: #3a567f; }
 .tag-plain { background: #ecebe4; color: var(--ink-soft); }
 
 /* ---------- lifecycle flow diagram ---------- */
@@ -249,7 +263,7 @@ section.tight { padding: 3rem 0; }
   width: 42px; height: 42px; border-radius: 50%; display: flex; align-items: center;
   justify-content: center; border: 1.5px solid var(--ink); background: var(--paper);
 }
-.flow-step.is-human .flow-idx { border-color: var(--accent); color: var(--accent-dark); background: var(--human-soft); }
+.flow-step.is-human .flow-idx { border-color: var(--gold); color: var(--gold-dark); background: var(--human-soft); }
 .flow-step.is-agent .flow-idx { border-color: var(--agent); color: var(--agent); background: var(--agent-soft); }
 .flow-body h4 { margin-bottom: 0.15rem; }
 .flow-body p { font-size: 0.9rem; color: var(--ink-soft); }
@@ -262,7 +276,7 @@ section.tight { padding: 3rem 0; }
 /* ---------- gate (HITL) blocks ---------- */
 
 .gate {
-  border-left: 4px solid var(--accent); background: var(--card);
+  border-left: 4px solid var(--gold); background: var(--card);
   border-radius: 0 var(--radius) var(--radius) 0; border-top: 1px solid var(--line);
   border-right: 1px solid var(--line); border-bottom: 1px solid var(--line);
   padding: 1.3rem 1.4rem;
@@ -275,7 +289,7 @@ section.tight { padding: 3rem 0; }
 /* ---------- dark sections ---------- */
 
 .dark { background: var(--dark); color: var(--dark-text); }
-.dark .kicker { color: #ff7a45; }
+.dark .kicker { color: var(--system); }
 .dark .lede, .dark .section-head p { color: var(--dark-muted); }
 .dark .card { background: var(--dark-card); border-color: var(--dark-line); }
 .dark .card p { color: var(--dark-muted); }
@@ -308,7 +322,7 @@ pre .f { color: #9bbcf2; }   /* function/field */
 }
 .term-bar { background: #161d27; padding: 0.55rem 1rem; display: flex; gap: 0.45rem; align-items: center; }
 .term-bar i { width: 11px; height: 11px; border-radius: 50%; background: #2c3543; display: inline-block; }
-.term-bar i:first-child { background: #e8490f; }
+.term-bar i:first-child { background: var(--gold); }
 .term-bar span { font-family: var(--font-mono); font-size: 0.72rem; color: #5d6b7e; margin-left: 0.6rem; }
 .term pre { border: none; border-radius: 0; margin: 0; background: transparent; font-size: 0.79rem; }
 .term .g { color: #4cc38a; } .term .y { color: #f5b042; } .term .b { color: #6ea8fe; } .term .dim { color: #5d6b7e; }
@@ -387,7 +401,7 @@ footer a:hover { color: #fff; }
 .legend { display: flex; gap: 1.4rem; flex-wrap: wrap; margin: 1.2rem 0 2rem; font-size: 0.85rem; color: var(--ink-soft); }
 .legend i { width: 11px; height: 11px; border-radius: 3px; display: inline-block; margin-right: 0.45rem; }
 .legend .i-agent { background: var(--agent); }
-.legend .i-human { background: var(--accent); }
+.legend .i-human { background: var(--gold); }
 .legend .i-system { background: var(--system); }
 
 .divider { border: none; border-top: 1px solid var(--line); margin: 0; }
@@ -395,12 +409,68 @@ footer a:hover { color: #fff; }
 .anchor-offset { scroll-margin-top: 90px; }
 
 /* Console link in the top nav */
-.nav-links .nav-console { color: var(--accent-dark); font-weight: 600; }
-.nav-links .nav-console:hover { color: var(--accent); }
+.nav-links .nav-console { color: var(--brand); font-weight: 600; }
+.nav-links .nav-console:hover { color: var(--brand-dark); }
+
+/* ============================================================
+   Motion — subtle "live system" cues. All guarded by
+   prefers-reduced-motion so it stays calm where requested.
+   ============================================================ */
+
+/* Brand flow-line: a thread of the palette pulling left→right.
+   Drop <div class="flowline"></div> wherever a living line helps. */
+.flowline {
+  height: 3px; border-radius: 99px; border: none; margin: 0;
+  background: linear-gradient(90deg,
+    var(--brand) 0%, var(--system) 22%, var(--gold) 48%,
+    var(--agent) 72%, var(--brand) 100%);
+  background-size: 220% 100%;
+  animation: flow-move 7s linear infinite;
+}
+.flowline.thin { height: 2px; }
+
+@keyframes flow-move { to { background-position: 220% 50%; } }
+
+/* Primary button: a slow light sweep on hover. */
+.btn-primary { position: relative; overflow: hidden; isolation: isolate; }
+.btn-primary::after {
+  content: ""; position: absolute; inset: 0; z-index: -1;
+  background: linear-gradient(110deg, transparent 35%,
+    rgba(255, 255, 255, 0.28) 50%, transparent 65%);
+  transform: translateX(-130%);
+}
+.btn-primary:hover::after { animation: btn-sweep 0.9s ease forwards; }
+@keyframes btn-sweep { to { transform: translateX(130%); } }
+
+/* Lifecycle: agent steps quietly breathe (autonomy at work);
+   the connector arrow drifts to suggest forward motion. */
+.flow-step.is-agent .flow-idx { animation: idx-breathe 2.8s ease-in-out infinite; }
+@keyframes idx-breathe {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(63, 111, 84, 0); }
+  50%      { box-shadow: 0 0 0 6px rgba(63, 111, 84, 0.14); }
+}
+.flow-step::after { animation: arrow-drift 2.4s ease-in-out infinite; }
+@keyframes arrow-drift {
+  0%, 100% { transform: translateY(0); opacity: 0.55; }
+  50%      { transform: translateY(3px); opacity: 1; }
+}
+
+/* Logo mark: a faint shimmer of life on hover. */
+.logo:hover .brand-mark { animation: mark-tip 0.5s ease; }
+@keyframes mark-tip {
+  40% { transform: translateY(-2px) rotate(-2deg); }
+  100% { transform: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .flowline, .btn-primary::after, .flow-step.is-agent .flow-idx,
+  .flow-step::after, .logo:hover .brand-mark { animation: none; }
+  .btn-primary::after { display: none; }
+}
 
 </style>
   <style>
-/* TalentFlow Console — app-specific styles on top of the site design system */
+/* Hire Console — app-specific styles on top of the site design system */
 
 body { background: #efeee8; }
 
@@ -437,7 +507,7 @@ textarea:focus, input:focus, select:focus { outline: 2px solid var(--accent); bo
 .load-existing input { width: 220px; }
 
 /* gate panel */
-.gate-panel { border-left: 5px solid var(--accent); }
+.gate-panel { border-left: 5px solid var(--gold); }
 #action-summary { color: var(--ink-soft); margin: 0.6rem 0 1rem; }
 
 .jd-box {
@@ -491,7 +561,18 @@ textarea:focus, input:focus, select:focus { outline: 2px solid var(--accent); bo
 .stepper li.done { color: var(--ink-soft); }
 .stepper li.done::before { background: var(--agent); }
 .stepper li.current { color: var(--ink); font-weight: 600; }
-.stepper li.current::before { background: var(--accent); box-shadow: 0 0 0 4px var(--human-soft); }
+.stepper li.current::before {
+  background: var(--brand);
+  box-shadow: 0 0 0 4px var(--brand-soft);
+  animation: step-pulse 2s ease-in-out infinite;
+}
+@keyframes step-pulse {
+  0%, 100% { box-shadow: 0 0 0 3px var(--brand-soft); }
+  50%      { box-shadow: 0 0 0 7px rgba(27, 95, 217, 0.16); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .stepper li.current::before { animation: none; }
+}
 
 /* artifacts */
 .artifact { margin-bottom: 0.9rem; }
@@ -507,8 +588,8 @@ textarea:focus, input:focus, select:focus { outline: 2px solid var(--accent); bo
 .tl-actor { font-family: var(--font-mono); font-size: 0.68rem; font-weight: 600; text-transform: uppercase;
   padding: 0.1rem 0.45rem; border-radius: 99px; justify-self: start; }
 .tl-actor.agent { background: var(--agent-soft); color: var(--agent); }
-.tl-actor.human { background: var(--human-soft); color: var(--accent-dark); }
-.tl-actor.system { background: #e4ecfb; color: var(--system); }
+.tl-actor.human { background: var(--human-soft); color: var(--gold-dark); }
+.tl-actor.system { background: var(--system-soft); color: #3a567f; }
 .tl-row .what { color: var(--ink-soft); }
 .tl-row .what strong { color: var(--ink); font-weight: 600; }
 
@@ -541,7 +622,7 @@ textarea:focus, input:focus, select:focus { outline: 2px solid var(--accent); bo
 
 <header class="nav">
   <div class="wrap nav-inner">
-    <a class="logo" href="../index.html"><span class="mark"></span>Talent<span class="tf-flow">Flow</span>&nbsp;<span class="console-tag">CONSOLE</span></a>
+    <a class="logo" href="../index.html"><svg class="brand-mark" viewBox="0 0 115 100" width="34" height="30" aria-hidden="true"><rect x="4" y="8" width="11" height="84" rx="2" fill="#1B5FD9"/><rect x="27" y="8" width="84" height="84" rx="6" fill="#E8B71D"/><rect x="49" y="25" width="13" height="50" rx="2" fill="#FFFFFF"/><rect x="76" y="25" width="13" height="50" rx="2" fill="#FFFFFF"/><rect x="49" y="43.5" width="40" height="13" rx="2" fill="#FFFFFF"/></svg><span class="brand-word">Hire</span>&nbsp;<span class="console-tag">CONSOLE</span></a>
     <div class="console-meta">
       <span id="wf-badge" class="wf-badge" hidden></span>
       <button id="btn-new" class="btn btn-ghost btn-sm">New workflow</button>
@@ -627,7 +708,7 @@ textarea:focus, input:focus, select:focus { outline: 2px solid var(--accent); bo
 <div id="toast" class="toast" hidden></div>
 
 <script>
-/* TalentFlow Console — drives the workflow API with forms instead of raw JSON. */
+/* Hire Console — drives the workflow API with forms instead of raw JSON. */
 
 "use strict";
 

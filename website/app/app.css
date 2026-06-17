@@ -1,4 +1,4 @@
-/* TalentFlow Console — app-specific styles on top of the site design system */
+/* Hire Console — app-specific styles on top of the site design system */
 
 body { background: #efeee8; }
 
@@ -35,7 +35,7 @@ textarea:focus, input:focus, select:focus { outline: 2px solid var(--accent); bo
 .load-existing input { width: 220px; }
 
 /* gate panel */
-.gate-panel { border-left: 5px solid var(--accent); }
+.gate-panel { border-left: 5px solid var(--gold); }
 #action-summary { color: var(--ink-soft); margin: 0.6rem 0 1rem; }
 
 .jd-box {
@@ -89,7 +89,18 @@ textarea:focus, input:focus, select:focus { outline: 2px solid var(--accent); bo
 .stepper li.done { color: var(--ink-soft); }
 .stepper li.done::before { background: var(--agent); }
 .stepper li.current { color: var(--ink); font-weight: 600; }
-.stepper li.current::before { background: var(--accent); box-shadow: 0 0 0 4px var(--human-soft); }
+.stepper li.current::before {
+  background: var(--brand);
+  box-shadow: 0 0 0 4px var(--brand-soft);
+  animation: step-pulse 2s ease-in-out infinite;
+}
+@keyframes step-pulse {
+  0%, 100% { box-shadow: 0 0 0 3px var(--brand-soft); }
+  50%      { box-shadow: 0 0 0 7px rgba(27, 95, 217, 0.16); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .stepper li.current::before { animation: none; }
+}
 
 /* artifacts */
 .artifact { margin-bottom: 0.9rem; }
@@ -105,8 +116,8 @@ textarea:focus, input:focus, select:focus { outline: 2px solid var(--accent); bo
 .tl-actor { font-family: var(--font-mono); font-size: 0.68rem; font-weight: 600; text-transform: uppercase;
   padding: 0.1rem 0.45rem; border-radius: 99px; justify-self: start; }
 .tl-actor.agent { background: var(--agent-soft); color: var(--agent); }
-.tl-actor.human { background: var(--human-soft); color: var(--accent-dark); }
-.tl-actor.system { background: #e4ecfb; color: var(--system); }
+.tl-actor.human { background: var(--human-soft); color: var(--gold-dark); }
+.tl-actor.system { background: var(--system-soft); color: #3a567f; }
 .tl-row .what { color: var(--ink-soft); }
 .tl-row .what strong { color: var(--ink); font-weight: 600; }
 
