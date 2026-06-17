@@ -1,0 +1,44 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 580">
+<rect width="560" height="580" fill="#f6f5f0"/>
+<text x="40" y="36" font-family="sans-serif" font-size="15" font-weight="700" fill="#15181e">Hire — logo concepts (new palette)</text>
+
+<!-- light row -->
+<text x="40" y="70" font-family="sans-serif" font-size="11" fill="#888">A · stripe tile</text>
+<text x="180" y="70" font-family="sans-serif" font-size="11" fill="#888">B · inverted</text>
+<text x="320" y="70" font-family="sans-serif" font-size="11" fill="#888">C · HIRE tile</text>
+<text x="40" y="250" font-family="sans-serif" font-size="11" fill="#888">D · horizontal lockup</text>
+<g transform="translate(40,80) scale(1.1)">
+<rect x="6" y="6" width="84" height="84" rx="18" fill="#E8B71D"/>
+<rect x="6" y="6" width="14" height="84" rx="7" fill="#1B5FD9"/>
+<rect x="34" y="28" width="8.8" height="40" rx="1.584" fill="#FFFFFF"/><rect x="58.8" y="28" width="8.8" height="40" rx="1.584" fill="#FFFFFF"/><rect x="39.28" y="44.0" width="23.04" height="8.8" rx="1.584" fill="#FFFFFF"/>
+</g>
+<g transform="translate(180,80) scale(1.1)">
+<rect x="6" y="6" width="84" height="84" rx="18" fill="#1B5FD9"/>
+<rect x="6" y="6" width="14" height="84" rx="7" fill="#E8B71D"/>
+<rect x="34" y="28" width="8.8" height="40" rx="1.584" fill="#FFFFFF"/><rect x="58.8" y="28" width="8.8" height="40" rx="1.584" fill="#FFFFFF"/><rect x="39.28" y="44.0" width="23.04" height="8.8" rx="1.584" fill="#FFFFFF"/>
+</g>
+<g transform="translate(320,80) scale(1.0)">
+<rect x="6" y="6" width="13" height="84" rx="3" fill="#1B5FD9"/>
+<rect x="30" y="6" width="114" height="84" rx="8" fill="#E8B71D"/>
+<text x="40" y="74" font-family="Rokkitt, 'DejaVu Serif', Georgia, serif" font-weight="800" font-size="40" fill="#FFFFFF" letter-spacing="1">HIRE</text>
+</g>
+<g transform="translate(40,260) scale(1.0)">
+<rect x="4" y="8" width="56" height="56" rx="12" fill="#E8B71D"/>
+<rect x="4" y="8" width="10" height="56" rx="5" fill="#1B5FD9"/>
+<rect x="26" y="22" width="6.16" height="28" rx="1.1088" fill="#FFFFFF"/><rect x="43.36" y="22" width="6.16" height="28" rx="1.1088" fill="#FFFFFF"/><rect x="29.695999999999998" y="33.2" width="16.128" height="6.16" rx="1.1088" fill="#FFFFFF"/>
+<text x="76" y="50" font-family="Rokkitt, 'DejaVu Serif', Georgia, serif" font-weight="700" font-size="40" fill="#15181E">Hire</text>
+</g>
+
+<!-- dark chip to check on dark bg -->
+<rect x="320" y="250" width="200" height="150" rx="12" fill="#15181e"/>
+<text x="332" y="270" font-family="sans-serif" font-size="11" fill="#888">on dark</text>
+<g transform="translate(330,290) scale(0.78)">
+<rect x="4" y="8" width="56" height="56" rx="12" fill="#E8B71D"/>
+<rect x="4" y="8" width="10" height="56" rx="5" fill="#1B5FD9"/>
+<rect x="26" y="22" width="6.16" height="28" rx="1.1088" fill="#FFFFFF"/><rect x="43.36" y="22" width="6.16" height="28" rx="1.1088" fill="#FFFFFF"/><rect x="29.695999999999998" y="33.2" width="16.128" height="6.16" rx="1.1088" fill="#FFFFFF"/>
+<text x="76" y="50" font-family="Rokkitt, 'DejaVu Serif', Georgia, serif" font-weight="700" font-size="40" fill="#15181E">Hire</text>
+</g>
+
+<text x="40" y="450" font-family="sans-serif" font-size="13" font-weight="700" fill="#15181e">Palette</text>
+<rect x="40" y="470" width="60" height="60" rx="8" fill="#1B5FD9" stroke="#ccc"/><text x="70.0" y="548" font-family="monospace" font-size="11" fill="#333" text-anchor="middle">#1B5FD9</text><rect x="110" y="470" width="60" height="60" rx="8" fill="#E8B71D" stroke="#ccc"/><text x="140.0" y="548" font-family="monospace" font-size="11" fill="#333" text-anchor="middle">#E8B71D</text><rect x="180" y="470" width="60" height="60" rx="8" fill="#3F6F54" stroke="#ccc"/><text x="210.0" y="548" font-family="monospace" font-size="11" fill="#333" text-anchor="middle">#3F6F54</text><rect x="250" y="470" width="60" height="60" rx="8" fill="#6E91C8" stroke="#ccc"/><text x="280.0" y="548" font-family="monospace" font-size="11" fill="#333" text-anchor="middle">#6E91C8</text><rect x="320" y="470" width="60" height="60" rx="8" fill="#57534E" stroke="#ccc"/><text x="350.0" y="548" font-family="monospace" font-size="11" fill="#333" text-anchor="middle">#57534E</text><rect x="390" y="470" width="60" height="60" rx="8" fill="#15181E" stroke="#ccc"/><text x="420.0" y="548" font-family="monospace" font-size="11" fill="#333" text-anchor="middle">#15181E</text>
+</svg>
