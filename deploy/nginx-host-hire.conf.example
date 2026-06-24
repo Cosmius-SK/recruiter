@@ -1,0 +1,29 @@
+# Host system nginx vhost for Hire.
+#
+# Proxies a dedicated subdomain to the Hire compose stack on 127.0.0.1:8080,
+# leaving your existing app on 443 completely untouched.
+#
+#   1) Point an A record (e.g. hire.yourdomain.com) at this VM's external IP.
+#   2) Copy to /etc/nginx/sites-available/hire and edit server_name below.
+#   3) Enable + reload:
+#        sudo ln -s /etc/nginx/sites-available/hire /etc/nginx/sites-enabled/hire
+#        sudo nginx -t && sudo systemctl reload nginx
+#   4) Get a trusted cert (certbot rewrites this to add the :443 server + redirect):
+#        sudo certbot --nginx -d hire.yourdomain.com
+
+server {
+    listen 80;
+    server_name hire.yourdomain.com;   # <-- change to your subdomain
+
+    # The compose stack (web + api containers) listens on localhost:8080 only.
+    location / {
+        proxy_pass http://127.0.0.1:8080;
+        proxy_set_header Host              $host;
+        proxy_set_header X-Real-IP         $remote_addr;
+        proxy_set_header X-Forwarded-For   $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+
+        # Workflow Start/Resume blocks until the next human gate; allow long requests.
+        proxy_read_timeout 900s;
+    }
+}

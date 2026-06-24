@@ -1,7 +1,8 @@
-# TalentFlow on a single VM: nginx serves the product website and fronts the API.
+# Hire on a single VM: nginx serves the product website and fronts the API.
 #   1. cp .env.example .env   (add GOOGLE_API_KEY or ANTHROPIC_API_KEY)
 #   2. docker compose up -d --build
-#   Website: http://<vm-ip>/        API: http://<vm-ip>/api/docs
+#   The stack listens on 127.0.0.1:8080; put the host's nginx in front of it on
+#   443 with a trusted cert (deploy/nginx-host-hire.conf.example). See deploy/gcp.md.
 services:
   api:
     build: .
@@ -15,8 +16,10 @@ services:
   web:
     image: nginx:1.27-alpine
     ports:
-      # 8080 by default so an existing web server can keep 80/443 on the host.
-      - "8080:80"
+      # Bind to localhost only: the host's own nginx fronts this on 443 with a
+      # trusted cert. Nothing is exposed publicly on :8080, and the existing app
+      # keeps 80/443. (Use "8080:80" instead for direct, certless VM-IP access.)
+      - "127.0.0.1:8080:80"
     volumes:
       - ./website:/usr/share/nginx/html:ro
       - ./deploy/nginx.conf:/etc/nginx/conf.d/default.conf:ro

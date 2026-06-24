@@ -1,16 +1,59 @@
-# Deploying TalentFlow on GCP
+# Deploying Hire
 
-Two supported paths. **Option A (Compute Engine VM)** is the reference setup —
-one VM runs nginx (product website + reverse proxy) and the API container.
-**Option B (Cloud Run)** is the serverless alternative.
+**Recommended path: the free-tier Compute Engine VM behind your existing nginx
+(Option A).** It has *no idle billing* and the app's background-thread design
+works as-is. Cloud Run (Option B) is possible but, for this app's design, bills
+a vCPU 24/7 — **read the billing-safety section first.**
 
-In both cases the LLM key is the only secret. Recommended source during the
-testing phase: a **Gemini API key** (free tier) from
-<https://aistudio.google.com/apikey>.
+The LLM key is the only secret. During testing use a **Gemini API key** (free
+tier) from <https://aistudio.google.com/apikey>.
 
 ---
 
-## Option A — your Compute Engine VM (reference)
+## 0. Billing safety — read this first
+
+**What caused the June bill.** This app runs each workflow in a background
+thread *after* the HTTP response returns and keeps run state warm in memory +
+SQLite on the instance. On Cloud Run that requires `--no-cpu-throttling
+--min-instances=1`, i.e. **one vCPU billed 24/7 even at zero traffic** — roughly
+**₹1,200 / ~$14 a month** of pure idle cost. That is the entire Cloud Run charge
+on the bill, not the VM (₹0.24) or Gemini (₹18.50).
+
+**Prevent it from ever recurring:**
+
+1. **Set a budget alert** (single most important control):
+   Billing → *Budgets & alerts* → create a budget (e.g. **₹200/mo**) with email
+   alerts at 50% / 90% / 100%. Budgets *alert*, they don't auto-cap — but a low
+   threshold means you hear about a leak in days, not at the next invoice.
+2. **Prefer the free VM (Option A).** No always-on instance, no idle billing.
+3. **Default Cloud Run services to scale-to-zero** (`--min-instances=0
+   --cpu-throttling`). Only override with a written reason + expected monthly cost.
+4. **Sweep the classic orphans** periodically: release unused **static IPs**,
+   delete **unattached disks**, and make boot disks **Standard PD** (the default
+   *Balanced SSD* is not free-tier covered).
+5. **30-second weekly check:** Billing → *Reports* → *Group by: SKU*. Anything
+   new shows up immediately.
+
+**Stop the current Cloud Run leak now** (run in Cloud Shell or any
+gcloud-authenticated shell):
+
+```bash
+# Simplest: delete the service entirely (you're moving to the VM).
+gcloud run services delete talentflow --region=us-east1
+
+# Or keep it but stop idle billing (note: with this app's background-thread
+# design, runs won't complete on a throttled/scale-to-zero service — see Option B):
+gcloud run services update talentflow --region=us-east1 \
+  --min-instances=0 --cpu-throttling
+```
+
+---
+
+## Option A — free-tier VM behind your existing nginx (recommended)
+
+Your VM already serves another app on 443. The Hire stack publishes only to the
+host's **localhost:8080**, so **443 and the old app are untouched**; your host
+nginx adds one `server` block that proxies a Hire subdomain → `127.0.0.1:8080`.
 
 ### 1. One-time VM prep
 
@@ -18,104 +61,96 @@ testing phase: a **Gemini API key** (free tier) from
 # On the VM (Debian/Ubuntu):
 sudo apt-get update && sudo apt-get install -y docker.io docker-compose-v2 git
 sudo usermod -aG docker $USER && newgrp docker
+
+# e2-micro has only 1 GB RAM. Add 2 GB swap so the Python container can't OOM
+# the box (and take the old app down with it):
+sudo fallocate -l 2G /swapfile && sudo chmod 600 /swapfile
+sudo mkswap /swapfile && sudo swapon /swapfile
+echo '/swapfile none swap sw 0 0' | sudo tee -a /etc/fstab
 ```
 
-If the VM doesn't allow HTTP yet, open port 80 (from your workstation / Cloud Shell):
-
-```bash
-gcloud compute firewall-rules create allow-talentflow-http \
-  --allow=tcp:80 --target-tags=http-server --direction=INGRESS
-gcloud compute instances add-tags YOUR_VM_NAME --tags=http-server --zone=YOUR_ZONE
-```
-
-### 2. Get the code and the key onto the VM
+### 2. Code + key
 
 ```bash
 git clone https://github.com/Cosmius-SK/recruiter.git && cd recruiter
+git checkout claude/stoic-johnson-670j81      # current branch
 cp .env.example .env
-```
-
-Put the key in `.env` — preferably pulled from **Secret Manager** rather than
-typed in plaintext:
-
-```bash
-# One-time: store the secret (from any gcloud-authenticated shell)
-echo -n "AIza..." | gcloud secrets create gemini-api-key --data-file=-
-
-# On the VM (service account needs roles/secretmanager.secretAccessor):
+# Pull the key from Secret Manager rather than typing it in plaintext:
 echo "GOOGLE_API_KEY=$(gcloud secrets versions access latest --secret=gemini-api-key)" >> .env
 ```
 
-### 3. Launch
+### 3. Launch (binds 127.0.0.1:8080 only)
 
 ```bash
 docker compose up -d --build
 ```
 
-That's the whole deployment:
+State persists in the `talentflow-data` Docker volume — containers are
+disposable, parked workflows survive restarts and redeploys. Verify locally on
+the VM before exposing it:
+
+```bash
+curl -s localhost:8080/ | head -n 5            # website
+curl -s localhost:8080/api/docs | head -n 5    # API explorer
+```
+
+### 4. Expose it on 443 via your host nginx + a trusted cert
+
+Corporate networks blocked the raw IP / plain-HTTP URLs earlier — the fix is a
+**real domain + Let's Encrypt cert**, exactly what made the `.run.app` URL work.
+
+1. Point an **A record** for a subdomain (e.g. `hire.yourdomain.com`) at the
+   VM's external IP. If the old app already has a domain on this VM, just add a
+   `hire.` subdomain.
+2. Drop the template `server` block into your host nginx and enable it:
+
+   ```bash
+   sudo cp deploy/nginx-host-hire.conf.example /etc/nginx/sites-available/hire
+   # edit the server_name to your subdomain, then:
+   sudo ln -s /etc/nginx/sites-available/hire /etc/nginx/sites-enabled/hire
+   sudo nginx -t && sudo systemctl reload nginx
+   ```
+3. Issue the cert (certbot rewrites the block to add the 443 server + redirect):
+
+   ```bash
+   sudo certbot --nginx -d hire.yourdomain.com
+   ```
 
 | URL | What |
 |---|---|
-| `http://<vm-ip>/` | Product website |
-| `http://<vm-ip>/api/docs` | API explorer (OpenAPI) |
-| `POST http://<vm-ip>/api/workflows` | Start a lifecycle |
+| `https://hire.yourdomain.com/` | Product website |
+| `https://hire.yourdomain.com/app/` | **Hire Console** (the product UI) |
+| `https://hire.yourdomain.com/api/docs` | API explorer |
 
-Workflow state persists in the `talentflow-data` volume — containers are
-disposable, parked workflows survive restarts and redeploys.
-
-### 4. Updating
+### 5. Updating
 
 ```bash
 git pull && docker compose up -d --build
 ```
 
-### 5. HTTPS (when you attach a domain)
-
-Point an A record at the VM, then either:
-- **Certbot on the VM** — add a TLS server block to `deploy/nginx.conf` with
-  `certbot certonly --webroot`, or
-- **GCP HTTPS Load Balancer** with a Google-managed certificate in front of
-  the VM (instance group backend) — no changes on the VM.
-
 ---
 
-## Option B — Cloud Run (serverless; trusted HTTPS URL)
+## Option B — Cloud Run (serverless) — ⚠️ not the cheap path for *this* app
 
-One service serves **both** the website and the API (the API mounts
-`website/` at `/`). This is also the recommended path when a corporate
-network blocks raw-IP / non-443 / plain-HTTP URLs: Cloud Run gives you a
-`https://….run.app` URL with a valid Google-managed certificate on port 443.
+One service serves both the website and the API. A `.run.app` URL gives you a
+trusted Google cert on 443 with no domain of your own — convenient, **but** this
+app's background-thread design needs an always-on vCPU, so a *working* Cloud Run
+deployment costs ~₹1,200/mo at idle (the June leak). A scale-to-zero deployment
+is free at idle but **won't complete background runs** until the app is
+re-architected to run synchronously to each human gate inside the request.
 
 ```bash
-# From a clone of the repo (e.g. in Cloud Shell):
+# Scale-to-zero (cheap, but background runs won't finish — see note above):
 gcloud run deploy talentflow --source . --region=us-east1 \
-  --allow-unauthenticated \
-  --no-cpu-throttling --min-instances=1 --max-instances=1 \
-  --timeout=900 \
-  --set-env-vars GOOGLE_API_KEY=YOUR_GEMINI_KEY
+  --allow-unauthenticated --min-instances=0 --cpu-throttling \
+  --timeout=900 --set-env-vars GOOGLE_API_KEY=YOUR_GEMINI_KEY
 ```
 
-The command prints the service URL, e.g. `https://talentflow-xxxxx-ue.a.run.app`:
-
-| URL | What |
-|---|---|
-| `https://<service-url>/` | Product website |
-| `https://<service-url>/app/` | **TalentFlow Console** (the product UI) |
-| `https://<service-url>/docs` | API explorer |
-
-Notes:
-- **`--no-cpu-throttling` is required.** The graph runs in a background thread
-  after the HTTP request returns; without always-allocated CPU, Cloud Run
-  pauses that thread between requests and workflows stall. `--min-instances=1`
-  keeps one warm instance so in-memory run status and SQLite state persist.
-- `--max-instances=1` keeps all workflow state on one instance (the demo uses
-  SQLite). For production, switch the checkpointer to **Cloud SQL Postgres**
-  (`langgraph-checkpoint-postgres`, swap `SqliteSaver` for `PostgresSaver` in
-  `talentflow/api/app.py`) — then instances can scale freely.
-- Prefer Secret Manager over `--set-env-vars` once past testing:
-  `--set-secrets=GOOGLE_API_KEY=gemini-api-key:latest` (grant the service
-  account `roles/secretmanager.secretAccessor`).
-- The first deploy enables Cloud Build and may take a few minutes.
+To make Cloud Run both cheap *and* working, the change is: replace the
+background thread in `talentflow/api/app.py` with a synchronous `invoke()` that
+returns at each `interrupt()`, and move the checkpointer off `/tmp` SQLite to a
+durable store (Cloud SQL Postgres via `langgraph-checkpoint-postgres`, or
+Firestore). Ask if you want this built — then Cloud Run idle cost is ~₹0.
 
 ---
 
